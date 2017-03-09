@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ff891a38</color>
+    <color name="colorPrimaryDark">#891a38</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="color_logo">#323232</color>
+    <color name="color_itemtext">#ffffff</color>
+    <color name="color_item">#80ffffff</color>
+    <color name="text_change">#ffff00</color>
+    <color name="text_black">#323232</color>
+
+
+<!-- Change value for preferred and market data depend on change sign -->
+
+    <color name="plus_sign">#008d00</color>
+    <color name="minus_sign">#e50000</color>
+    <color name="equal_sign">#ffcc00</color>
+
+
+
+</resources>

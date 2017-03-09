@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="340dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="#f4f6f6"
+    android:weightSum="1"
+    android:layout_weight="2.50">
+
+    <TextView
+        android:text="@string/market_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/txt_Title"
+        android:layout_marginTop="5dp"
+        style="@style/CustomTextViewTitle"
+        />
+
+
+    <LinearLayout
+        android:layout_width="350dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:layout_weight="6.40">
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/equal_sign"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.51"
+            android:layout_marginBottom="10dp"
+            android:layout_width="150dp">
+
+
+            <TextView
+                android:text="@string/market_index"
+                android:gravity="center"
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_CurrentMarketIndex"
+                style="@style/CustomTextView"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp">
+
+
+                <TextView
+                    android:text="@string/market_percentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_ChangePercentage"
+                    android:layout_marginBottom="5dp"
+                    style="@style/CustomTextView"
+                    android:gravity="left|center"
+                    android:layout_marginLeft="2dp" />
+
+                <TextView
+                    android:text="@string/marketindex_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_ChangeValue"
+                    android:layout_marginBottom="5dp"
+                    style="@style/CustomTextView"
+                    android:foregroundGravity="left"
+                    android:gravity="right"
+                    android:layout_marginRight="7dp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/gradient"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.17"
+            android:layout_marginRight="15dp"
+            android:layout_width="150dp">
+
+            <TextView
+                android:text="@string/market_value"
+                android:gravity="center"
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/CustomTextView"
+                android:id="@+id/txt_MarketTrasactionValue"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp">
+
+
+                <TextView
+                    android:text="@string/market_volume"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.94"
+                    style="@style/CustomTextView"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/txt_TransactionVolume"
+                    android:gravity="left"
+                    android:layout_marginLeft="2dp" />
+
+                <TextView
+                    android:text="@string/market_trade"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="7dp"
+                    style="@style/CustomTextView"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="right"
+                    android:id="@+id/txt_NoOfMarketTrades"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/chart1"/>
+
+    </LinearLayout>
+</LinearLayout>

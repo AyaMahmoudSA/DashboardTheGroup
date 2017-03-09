@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_height="106dp"
+        android:orientation="vertical"
+        android:background="@drawable/gradient"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="94dp"
+        android:weightSum="1">
+
+
+
+        <TextView
+            style="@style/CustomTextView"
+            android:text="@string/symbol"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/txt_Symbol"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            style="@style/CustomTextView"
+            android:text="@string/current_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.11"
+            android:layout_marginTop="15dp"
+            android:id="@+id/txt_CurrentPrice"
+            android:gravity="center" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.05">
+
+            <TextView
+                style="@style/CustomTextView"
+                android:text="@string/percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/txt_ChangePercentage"
+                android:layout_marginLeft="1dp" />
+
+            <TextView
+                style="@style/CustomTextView"
+                android:text="@string/value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:id="@+id/txt_ChangeValue"
+                android:layout_marginRight="7dp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
