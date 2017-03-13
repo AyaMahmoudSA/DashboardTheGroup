@@ -1,12 +1,17 @@
 package com.av.dashboardthegroup;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.internal.view.menu.ExpandedMenuView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,11 +19,23 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +45,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -132,15 +151,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //TODO Define GridView To show Data with box beside
         gridView=new ExpandGridView(this);
         gridView = (ExpandGridView) findViewById(R.id.grid);
         gridView.setExpanded(true);
-        gridView.setFocusable(false); // To make Gridview not start at top of screen you have to set
+        gridView.setFocusable(false); // ToDO make Gridview not start at top of screen you have to set.
 
         perferredStockDataAdapter = new PerferredStockDataAdapter(this);
 
 
-
+        //TODO Get Data For Prefered list
         myRef_2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -157,6 +177,36 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+        //TODO Line Chart Steps
+        LineChart chart = (LineChart) findViewById(R.id.chart);
+
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(4f, 0));
+        entries.add(new Entry(8f, 1));
+        entries.add(new Entry(6f, 2));
+        entries.add(new Entry(2f, 3));
+        entries.add(new Entry(18f, 4));
+        entries.add(new Entry(9f, 5));
+
+        LineDataSet dataset = new LineDataSet(entries, "# of Calls");
+
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("January");
+        labels.add("February");
+        labels.add("March");
+        labels.add("April");
+        labels.add("May");
+        labels.add("June");
+
+        LineData data = new LineData(dataset);
+   /*     dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
+        dataset.setDrawCircles(true);
+        dataset.setDrawFilled(true);*/
+
+        chart.setData(data);
+     //   chart.animateY(5000);
 
 
 
@@ -260,6 +310,46 @@ public class MainActivity extends AppCompatActivity {
                 holder.ChangeValue.setTextColor(getResources().getColor(R.color.minus_sign));
 
             }
+
+
+
+        /*    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    dataSnap = dataSnapshot_StocksData.child(String.valueOf(position));
+
+                    final CharSequence[] items = {"BUY", "SELL", "Cancel"};
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Make your selection");
+                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            // Do something with the selection
+                            if (items[item].equals("BUY")) {
+                               //getCapturesProfilePicFromCamera();
+                                Intent i=new Intent(MainActivity.this,orderactivity.class);
+                                i.putExtra("Symbol",dataSnap.child("Symbol").getValue().toString());
+
+                                startActivity(i);
+
+
+
+                            } else if (items[item].equals("Choose from Library")) {
+                                Toast.makeText(MainActivity.this,items[item], Toast.LENGTH_SHORT).show();
+                            } else if (items[item].equals("Cancel")) {
+                                dialog.dismiss();
+                            }                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+
+
+
+
+                }
+            });*/
 
             return convertView;
         }

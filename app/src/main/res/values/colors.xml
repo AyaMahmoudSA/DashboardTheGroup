@@ -7,7 +7,7 @@
     <color name="color_itemtext">#ffffff</color>
     <color name="color_item">#80ffffff</color>
     <color name="text_change">#ffff00</color>
-    <color name="text_black">#323232</color>
+    <color name="text_black">#000000</color>
 
 
 <!-- Change value for preferred and market data depend on change sign -->

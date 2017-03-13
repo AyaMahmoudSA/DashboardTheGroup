@@ -17,16 +17,21 @@
             android:theme="@style/splashScreenTheme">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".MainActivity"
+            android:label="Dashboard"
+            android:icon="@drawable/ic_phone"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".orderactivity"
             android:label="Dashboard"
             android:icon="@drawable/ic_phone"
             android:screenOrientation="portrait" />
