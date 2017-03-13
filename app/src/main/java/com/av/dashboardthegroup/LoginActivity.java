@@ -82,7 +82,11 @@ public class LoginActivity extends Activity {
                                                APP.SessionID = response.getJSONObject("Message").getJSONObject("LogResponse").getString("SessionID");
                                                Toast.makeText(LoginActivity.this, APP.SessionID, Toast.LENGTH_SHORT).show();
 
+                                               String strUserName = Investor_No.getText().toString().trim();
+                                               String password = Password.getText().toString().trim();
                                                Intent success = new Intent(LoginActivity.this, MainActivity.class);
+                                               success.putExtra("NIN",strUserName);
+                                               success.putExtra("Password",password);
                                                startActivity(success);
 
                                            } else {

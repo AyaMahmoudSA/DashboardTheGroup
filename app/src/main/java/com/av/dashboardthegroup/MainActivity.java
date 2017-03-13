@@ -27,21 +27,25 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.charts.BarChart;
+
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -54,16 +58,18 @@ import java.util.Locale;
  */
 
 public class MainActivity extends AppCompatActivity {
-    TextView CurrentMarketIndex,ChangePercentage,ChangeValue,
-             MarketTrasactionValue,TransactionVolume,NoOfMarketTrades ;
+    TextView CurrentMarketIndex, ChangePercentage, ChangeValue,
+            MarketTrasactionValue, TransactionVolume, NoOfMarketTrades;
     private ExpandGridView gridView;
     public static DataSnapshot dataSnapshot_StocksData;
-    public PerferredStockDataAdapter  perferredStockDataAdapter ;
+    public PerferredStockDataAdapter perferredStockDataAdapter;
     MyViewHoldwer holder = null;
     private static LayoutInflater inflater = null;
     DataSnapshot dataSnap;
     private Activity activity;
     ScrollView scrollView;
+
+    JSONObject get_result;
 
 
     @Override
@@ -73,21 +79,21 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO make logo behind name of activity "Dashboard"
         ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled (true);
-        actionbar.setHomeAsUpIndicator (R.drawable.actionbar);
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.actionbar);
         /*scrollView =(ScrollView)findViewById(R.id.scroll);
         scrollView.requestFocus();
 */
         //TODO  Declare textview from view to access it .
         //TODO First box about market data
-        CurrentMarketIndex    = (TextView) findViewById(R.id.txt_CurrentMarketIndex);
-        ChangePercentage      = (TextView) findViewById(R.id.txt_ChangePercentage);
-        ChangeValue           = (TextView) findViewById(R.id.txt_ChangeValue);
+        CurrentMarketIndex = (TextView) findViewById(R.id.txt_CurrentMarketIndex);
+        ChangePercentage = (TextView) findViewById(R.id.txt_ChangePercentage);
+        ChangeValue = (TextView) findViewById(R.id.txt_ChangeValue);
 
         //TODO Second box about market data
         MarketTrasactionValue = (TextView) findViewById(R.id.txt_MarketTrasactionValue);
-        TransactionVolume     = (TextView) findViewById(R.id.txt_TransactionVolume);
-        NoOfMarketTrades      = (TextView) findViewById(R.id.txt_NoOfMarketTrades);
+        TransactionVolume = (TextView) findViewById(R.id.txt_TransactionVolume);
+        NoOfMarketTrades = (TextView) findViewById(R.id.txt_NoOfMarketTrades);
 
 
         //TODO get instance from Firebase to fetch data
@@ -99,50 +105,48 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-             //TODO Get market data first box value from Firebase
-             DataSnapshot   get_CurrentMarketIndex = dataSnapshot.child("Market_Data").child("CurrentMarketIndex");
-             DataSnapshot   get_ChangePercentage   = dataSnapshot.child("Market_Data").child("ChangePercentage");
-             DataSnapshot   get_ChangeValue        = dataSnapshot.child("Market_Data").child("ChangeValue");
-             DataSnapshot   get_Sign               = dataSnapshot.child("Market_Data").child("Sign");
+                //TODO Get market data first box value from Firebase
+                DataSnapshot get_CurrentMarketIndex = dataSnapshot.child("Market_Data").child("CurrentMarketIndex");
+                DataSnapshot get_ChangePercentage = dataSnapshot.child("Market_Data").child("ChangePercentage");
+                DataSnapshot get_ChangeValue = dataSnapshot.child("Market_Data").child("ChangeValue");
+                DataSnapshot get_Sign = dataSnapshot.child("Market_Data").child("Sign");
 
 
+                String string_CurrentMarketIndex = FormatNumber(get_CurrentMarketIndex.getValue().toString());
+                CurrentMarketIndex.setText(string_CurrentMarketIndex);
+                ChangePercentage.setText(get_ChangePercentage.getValue().toString() + "%");
+                ChangeValue.setText(get_ChangeValue.getValue().toString());
 
+                if (get_Sign.getValue().toString().equals("+")) {
+                    ChangePercentage.setTextColor(getResources().getColor(R.color.plus_sign));
+                    ChangeValue.setTextColor(getResources().getColor(R.color.plus_sign));
 
-             String string_CurrentMarketIndex = FormatNumber(get_CurrentMarketIndex.getValue().toString()) ;
-             CurrentMarketIndex.setText(string_CurrentMarketIndex);
-             ChangePercentage.setText(get_ChangePercentage.getValue().toString()+"%");
-             ChangeValue.setText(get_ChangeValue.getValue().toString());
-
-             if(get_Sign.getValue().toString().equals("+")){
-                 ChangePercentage.setTextColor(getResources().getColor(R.color.plus_sign));
-                 ChangeValue.setTextColor(getResources().getColor(R.color.plus_sign));
-
-             }
-             if(get_Sign.getValue().toString().equals("-")){
+                }
+                if (get_Sign.getValue().toString().equals("-")) {
                     ChangePercentage.setTextColor(getResources().getColor(R.color.minus_sign));
                     ChangeValue.setTextColor(getResources().getColor(R.color.minus_sign));
 
-              }
-             if(get_Sign.getValue().toString().equals("=")){
+                }
+                if (get_Sign.getValue().toString().equals("=")) {
                     ChangePercentage.setTextColor(getResources().getColor(R.color.equal_sign));
                     ChangeValue.setTextColor(getResources().getColor(R.color.minus_sign));
 
-              }
+                }
 
-             //TODO Get market data Second box value from Firebase
-             DataSnapshot   get_MarketTrasactionValue = dataSnapshot.child("Market_Data").child("MarketTrasactionValue");
-             DataSnapshot   get_TransactionVolume     = dataSnapshot.child("Market_Data").child("TransactionVolume");
-             DataSnapshot   get_NoOfMarketTrades      = dataSnapshot.child("Market_Data").child("NoOfMarketTrades");
-
-
-             String string_MarketTrasactionValue = FormatNumber(get_MarketTrasactionValue.getValue().toString()) ;
-             MarketTrasactionValue.setText(string_MarketTrasactionValue);
+                //TODO Get market data Second box value from Firebase
+                DataSnapshot get_MarketTrasactionValue = dataSnapshot.child("Market_Data").child("MarketTrasactionValue");
+                DataSnapshot get_TransactionVolume = dataSnapshot.child("Market_Data").child("TransactionVolume");
+                DataSnapshot get_NoOfMarketTrades = dataSnapshot.child("Market_Data").child("NoOfMarketTrades");
 
 
-             String string_TransactionVolume = FormatNumber(get_TransactionVolume.getValue().toString()) ;
-             TransactionVolume.setText(string_TransactionVolume);
-             String string_NoOfMarketTrades = FormatNumber(get_NoOfMarketTrades.getValue().toString()) ;
-             NoOfMarketTrades.setText(string_NoOfMarketTrades);
+                String string_MarketTrasactionValue = FormatNumber(get_MarketTrasactionValue.getValue().toString());
+                MarketTrasactionValue.setText(string_MarketTrasactionValue);
+
+
+                String string_TransactionVolume = FormatNumber(get_TransactionVolume.getValue().toString());
+                TransactionVolume.setText(string_TransactionVolume);
+                String string_NoOfMarketTrades = FormatNumber(get_NoOfMarketTrades.getValue().toString());
+                NoOfMarketTrades.setText(string_NoOfMarketTrades);
             }
 
             @Override
@@ -152,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //TODO Define GridView To show Data with box beside
-        gridView=new ExpandGridView(this);
+        gridView = new ExpandGridView(this);
         gridView = (ExpandGridView) findViewById(R.id.grid);
         gridView.setExpanded(true);
         gridView.setFocusable(false); // ToDO make Gridview not start at top of screen you have to set.
@@ -164,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
         myRef_2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DataSnapshot  get_StocksData = dataSnapshot.child("Stocks_Data");
-                dataSnapshot_StocksData=get_StocksData;
+                DataSnapshot get_StocksData = dataSnapshot.child("Stocks_Data");
+                dataSnapshot_StocksData = get_StocksData;
 
 
                 gridView.setAdapter(perferredStockDataAdapter);
@@ -180,40 +184,91 @@ public class MainActivity extends AppCompatActivity {
 
 
         //TODO Line Chart Steps
-        LineChart chart = (LineChart) findViewById(R.id.chart);
+      /*  LineChart graph = (LineChart) findViewById(R.id.chart);
 
+// creating list of entry
         ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(4f, 0));
-        entries.add(new Entry(8f, 1));
-        entries.add(new Entry(6f, 2));
-        entries.add(new Entry(2f, 3));
-        entries.add(new Entry(18f, 4));
-        entries.add(new Entry(9f, 5));
+        entries.add(new Entry(0, 4f));
+        entries.add(new Entry(1, 8f));
+        entries.add(new Entry(2, 6f));
+        entries.add(new Entry(3, 2f));
+        entries.add(new Entry(4, 18f));
+        entries.add(new Entry(5, 9f));
 
-        LineDataSet dataset = new LineDataSet(entries, "# of Calls");
+        LineDataSet dataSet = new LineDataSet(entries, "# of Calls");
+        LineData lineData = new LineData(dataSet);
 
-        ArrayList<String> labels = new ArrayList<String>();
-        labels.add("January");
-        labels.add("February");
-        labels.add("March");
-        labels.add("April");
-        labels.add("May");
-        labels.add("June");
+        graph.getXAxis().setEnabled(false);
+        graph.getAxisLeft().setDrawAxisLine(false);
+        graph.setData(lineData);
+*/
 
-        LineData data = new LineData(dataset);
-   /*     dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
-        dataset.setDrawCircles(true);
-        dataset.setDrawFilled(true);*/
-
-        chart.setData(data);
-     //   chart.animateY(5000);
+        //TODO Portfolio
 
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String NIN = bundle.getString("NIN");
+            String Password = bundle.getString("Password");
+            try {
+                JSONObject Portfolio_Request = new JSONObject();
+                Portfolio_Request.put("NIN", NIN);
+                Portfolio_Request.put("Password", Password);
+                Portfolio_Request.put("MobileNumber", "");
+
+                AndroidNetworking
+                        .post(URL.URL_Portfolio)
+                        .addHeaders("Accept", "application/json")
+                        .addHeaders("Content-type", "application/json")
+                        .addJSONObjectBody(Portfolio_Request)
+                        .setPriority(Priority.HIGH)
+                        .build()
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                                get_result = response;
 
 
+                            }
+
+                            @Override
+                            public void onError(ANError anError) {
+
+                            }
+                        });
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        try {
+            JSONArray get_jsonarray = get_result.getJSONArray("portfolios");
+            for (int i = 0; i < get_jsonarray.length(); i++) {
+                JSONObject jsonas = get_jsonarray.getJSONObject(i);
+
+
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
     }
+
+
+
+
+
+
+
+
+
 
 
 
