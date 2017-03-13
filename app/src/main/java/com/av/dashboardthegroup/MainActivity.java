@@ -252,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonas = get_jsonarray.getJSONObject(i);
 
 
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
