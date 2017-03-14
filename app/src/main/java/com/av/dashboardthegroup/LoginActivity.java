@@ -18,15 +18,16 @@ import com.jacksonandroidnetworking.JacksonParserFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
- * Created by Maiada on 28-02-2017.
+ * Created by Aya on 28-02-2017.
  */
 
 public class LoginActivity extends Activity {
 
     EditText Investor_No,Password;
     Button Login;
-
     /** Called when the activity is first created */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,71 +43,92 @@ public class LoginActivity extends Activity {
 
 
 
-       Login.setOnClickListener(new View.OnClickListener() {
+ Login.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-                  String strUserName = Investor_No.getText().toString().trim();
-                  String password = Password.getText().toString().trim();
-                   try {
-                       JSONObject Loginobj = new JSONObject();
-                       Loginobj.put("UserName",strUserName);
-                       Loginobj.put("Password", password);
-                       Loginobj.put("Lang", "ENG");
+     String strUserName = Investor_No.getText().toString().trim();
+     String password = Password.getText().toString().trim();
 
-                       JSONObject Login_Data = new JSONObject();
-                       Login_Data.put("Login", Loginobj);
+    try {
+        JSONObject Loginobj = new JSONObject();
+        Loginobj.put("UserName",strUserName);
+        Loginobj.put("Password", password);
+        Loginobj.put("Lang", "ENG");
 
-                       JSONObject Request_Login = new JSONObject();
-                       Request_Login.put("Message", Login_Data);
-                       Request_Login.put("AppId", "");
-                       Request_Login.put("Srv", "Login");
-                       Request_Login.put("Version", "1");
-                       Request_Login.put("LstLogin", "");
+        JSONObject Login_Data = new JSONObject();
+        Login_Data.put("Login", Loginobj);
 
-                       AndroidNetworking
-                               .post(URL.URL_Login)
-                               .addHeaders("Accept", "application/json")
-                               .addHeaders("Content-type", "application/json")
-                               .addJSONObjectBody(Request_Login)
-                               .setPriority(Priority.HIGH)
-                               .setTag("Test")
-                               .build()
-                               .getAsJSONObject(new JSONObjectRequestListener() {
-                                   @Override
-                                   public void onResponse(JSONObject response) {
-                                       try {
+        JSONObject Request_Login = new JSONObject();
+        Request_Login.put("Message", Login_Data);
+        Request_Login.put("AppId", "");
+        Request_Login.put("Srv", "Login");
+        Request_Login.put("Version", "1");
+        Request_Login.put("LstLogin", "");
 
-                                           String result = response.getJSONObject("ResponseStatus").getString("ResCode");
-                                           if (result.equals("0")) {
+        AndroidNetworking
+         .post(URL.URL_Login)
+         .addHeaders("Accept", "application/json")
+         .addHeaders("Content-type", "application/json")
+         .addJSONObjectBody(Request_Login)
+          .setPriority(Priority.HIGH)
+          .setTag("Test")
+          .build()
+          .getAsJSONObject(new JSONObjectRequestListener() {
+          @Override
+          public void onResponse(JSONObject response) {
+          try {
+         String result = response.getJSONObject("ResponseStatus").getString("ResCode");
+          if (result.equals("0")) {
+           APP.SessionID = response.getJSONObject("Message").getJSONObject("LogResponse").getString("SessionID");
+      //   Toast.makeText(LoginActivity.this, APP.SessionID, Toast.LENGTH_SHORT).show();
+              String strUserName = Investor_No.getText().toString().trim();
+              String password = Password.getText().toString().trim();
+              JSONObject Portfolio_Request = new JSONObject();
+              Portfolio_Request.put("NIN", strUserName);
+              Portfolio_Request.put("Password", password);
+              Portfolio_Request.put("MobileNumber", "");
 
-                                               APP.SessionID = response.getJSONObject("Message").getJSONObject("LogResponse").getString("SessionID");
-                                               Toast.makeText(LoginActivity.this, APP.SessionID, Toast.LENGTH_SHORT).show();
+              AndroidNetworking
+                      .post(URL.URL_Portfolio)
+                      .addHeaders("Accept", "application/json")
+                      .addHeaders("Content-type", "application/json")
+                      .addJSONObjectBody(Portfolio_Request)
+                      .setPriority(Priority.HIGH)
+                      .build()
+                      .getAsJSONObject(new JSONObjectRequestListener() {
+                          @Override
+                          public void onResponse(JSONObject response) {
+                             Intent success = new Intent(LoginActivity.this, MainActivity.class);
+                              success.putExtra("Response", response.toString());
+                              startActivity(success);
 
-                                               String strUserName = Investor_No.getText().toString().trim();
-                                               String password = Password.getText().toString().trim();
-                                               Intent success = new Intent(LoginActivity.this, MainActivity.class);
-                                               success.putExtra("NIN",strUserName);
-                                               success.putExtra("Password",password);
-                                               startActivity(success);
+                          }
 
-                                           } else {
-                                               String error = response.getJSONObject("ResponseStatus").getString("ResDesc");
-                                               Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
-                                           }
-                                       } catch (JSONException e) {
-                                           e.printStackTrace();
-                                       }
-                                   }
+                          @Override
+                          public void onError(ANError anError) {
+
+                          }
+                      });
 
 
-                                   @Override
-                                   public void onError(ANError anError) {
-                                       Toast.makeText(LoginActivity.this, anError.toString(), Toast.LENGTH_SHORT).show();
+          } else {
+              String error = response.getJSONObject("ResponseStatus").getString("ResDesc");
+              Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+            }
+            } catch (JSONException e) {
+              e.printStackTrace();
+          }
+          }
+              @Override
+           public void onError(ANError anError) {
+            Toast.makeText(LoginActivity.this, anError.toString(), Toast.LENGTH_SHORT).show();
+            }
+             });
 
-                                   }
-                               });
 
-                   } catch (JSONException e) {
+
+
+    } catch (JSONException e) {
                        e.printStackTrace();
 
                    }
@@ -116,6 +138,8 @@ public class LoginActivity extends Activity {
 
 
            }
+
+
        );
 
     }

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     >
 
-    <com.av.dashboardthegroup.ExpandGridView
+    <com.av.dashboardthegroup.Expandable.ExpandGridView
         android:id="@+id/grid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

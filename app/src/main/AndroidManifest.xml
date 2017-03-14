@@ -30,11 +30,6 @@
             android:label="Dashboard"
             android:icon="@drawable/ic_phone"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".orderactivity"
-            android:label="Dashboard"
-            android:icon="@drawable/ic_phone"
-            android:screenOrientation="portrait" />
 
     </application>
 

@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 /**
- * Created by Maiada on 28-02-2017.
+ * Created by Aya on 28-02-2017.
  */
 
 public class SplashActivity  extends Activity {

@@ -1,4 +1,4 @@
-package com.av.dashboardthegroup;
+package com.av.dashboardthegroup.Expandable;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,10 +6,10 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 /**
- * Created by Maiada on 08-03-2017.
+ * Created by Aya on 3/14/2017.
  */
 
-public class ExpandGridView extends GridView {
+public class ExpandGridView  extends GridView {
 
     boolean expanded = false;
 
@@ -24,7 +24,7 @@ public class ExpandGridView extends GridView {
     }
 
     public ExpandGridView(Context context, AttributeSet attrs,
-                                    int defStyle)
+                          int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -58,6 +58,10 @@ public class ExpandGridView extends GridView {
     public void setExpanded(boolean expanded)
     {
         this.expanded = expanded;
-    } }
+
+
+    }
+
+}
 
 
