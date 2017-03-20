@@ -6,11 +6,11 @@
 
     <com.av.dashboardthegroup.Expandable.ExpandGridView
         android:id="@+id/grid"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:horizontalSpacing="2dp"
-        android:numColumns="3"
-        android:verticalSpacing="10dp"
+        android:numColumns="2"
+        android:animateLayoutChanges="true"
+
         />
 
 

@@ -8,4 +8,7 @@ import android.content.pm.PackageInstaller;
 
 public class APP {
     public  static String SessionID ="";
+    public  static String Balance ="";
+
+
 }

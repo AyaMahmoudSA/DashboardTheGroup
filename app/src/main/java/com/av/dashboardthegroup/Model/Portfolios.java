@@ -7,9 +7,13 @@ package com.av.dashboardthegroup.Model;
 public class Portfolios {
 
     public String Symbol;
+    public String MarketValue;
+
+    public String Totalprice;
+    public String Balance;
+
 
  /*   public String NoOfStocks;
-    public String MarketValue;
     public String NameEn;
     public String NameAr;
     public String LastClose;
@@ -19,9 +23,7 @@ public class Portfolios {
     public String TradeValue;
     public String LastTrade;
     public String StockType;
-    public String Totalprice;
     public String Total;
-    public String Balance;
     public String NIN;
     */
    /* public String getStockType() {
@@ -40,8 +42,6 @@ public class Portfolios {
         Symbol = symbol;
     }
 
-
-/*
     public String getTotalprice() {
         return Totalprice;
     }
@@ -50,12 +50,12 @@ public class Portfolios {
         Totalprice = totalprice;
     }
 
-    public String getNIN() {
-        return NIN;
+    public String getMarketValue() {
+        return MarketValue;
     }
 
-    public void setNIN(String NIN) {
-        this.NIN = NIN;
+    public void setMarketValue(String marketValue) {
+        MarketValue = marketValue;
     }
 
     public String getBalance() {
@@ -65,6 +65,19 @@ public class Portfolios {
     public void setBalance(String balance) {
         Balance = balance;
     }
+
+/*
+
+
+    public String getNIN() {
+        return NIN;
+    }
+
+    public void setNIN(String NIN) {
+        this.NIN = NIN;
+    }
+
+
 
     public String getTotal() {
         return Total;
@@ -138,13 +151,7 @@ public class Portfolios {
         NameAr = nameAr;
     }
 
-    public String getMarketValue() {
-        return MarketValue;
-    }
 
-    public void setMarketValue(String marketValue) {
-        MarketValue = marketValue;
-    }
 
     public String getNoOfStocks() {
         return NoOfStocks;

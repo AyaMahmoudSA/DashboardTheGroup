@@ -3,11 +3,14 @@ package com.av.dashboardthegroup.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.av.dashboardthegroup.MainActivity;
@@ -38,7 +41,7 @@ public class PerferredStockDataAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        return (int)dataSnap.getChildrenCount();
+        return (int)dataSnap.getChildrenCount()-34;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class PerferredStockDataAdapter extends BaseAdapter {
         if (convertView == null)
 
         {
-            convertView = inflater.inflate(R.layout.row_preferred_data, null);
+            convertView = inflater.inflate(R.layout.try_k, null);
             holder = new MyViewHoldwer(convertView);
             convertView.setTag(holder);
             Log.d("row", "Creating row");
@@ -78,7 +81,7 @@ public class PerferredStockDataAdapter extends BaseAdapter {
         holder.CurrentPrice.setText(get_CurrentPrice);
 
         String get_ChangePercentage = BigDecimal(child.child("ChangePercentage").getValue().toString());
-        holder.ChangePercentage.setText(get_ChangePercentage);
+        holder.ChangePercentage.setText(get_ChangePercentage+"%");
 
         String get_ChangeValue = BigDecimal(child.child("ChangeValue").getValue().toString());
         holder.ChangeValue.setText(get_ChangeValue);
@@ -86,18 +89,24 @@ public class PerferredStockDataAdapter extends BaseAdapter {
 
 
         if(child.child("ChangeSign").getValue().toString().equals("+")){
-            holder.ChangePercentage.setTextColor(activity.getResources().getColor(R.color.plus_sign));
-            holder.ChangeValue.setTextColor(activity.getResources().getColor(R.color.plus_sign));
+
+
+         holder.linearLayout.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.shadow_green));
+           // holder.ChangeValue.setTextColor(activity.getResources().getColor(R.color.plus_sign));
 
         }
         if(child.child("ChangeSign").getValue().toString().equals("-")){
-            holder.ChangePercentage.setTextColor(activity.getResources().getColor(R.color.minus_sign));
-            holder.ChangeValue.setTextColor(activity.getResources().getColor(R.color.minus_sign));
+            holder.linearLayout.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.shadow_red));
+
+            //    holder.linearLayout.setBackgroundColor(activity.getResources().getColor(R.color.minus_sign));
+            //holder.ChangeValue.setTextColor(activity.getResources().getColor(R.color.minus_sign));
 
         }
-        if(child.child("ChangeSign").getValue().toString().equals("=")){
-            holder.ChangePercentage.setTextColor(activity.getResources().getColor(R.color.equal_sign));
-            holder.ChangeValue.setTextColor(activity.getResources().getColor(R.color.minus_sign));
+        if(child.child("ChangeSign").getValue().toString().equals("=")) {
+            holder.linearLayout.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.shadow_yellow));
+
+            // holder.linearLayout.setBackgroundColor(activity.getResources().getColor(R.color.equal_sign));
+            //holder.ChangeValue.setTextColor(activity.getResources().getColor(R.color.minus_sign));
 
         }
 
@@ -147,12 +156,14 @@ public class PerferredStockDataAdapter extends BaseAdapter {
 
     static  class MyViewHoldwer {
         TextView Symbol, CurrentPrice, ChangePercentage, ChangeValue;
+        LinearLayout linearLayout;
 
         public MyViewHoldwer(View v) {
             Symbol = (TextView) v.findViewById(R.id.txt_Symbol);
             CurrentPrice = (TextView) v.findViewById(R.id.txt_CurrentPrice);
             ChangePercentage = (TextView) v.findViewById(R.id.txt_ChangePercentage);
             ChangeValue = (TextView) v.findViewById(R.id.txt_ChangeValue);
+            linearLayout =(LinearLayout)v.findViewById(R.id.linear_color);
             v.setTag(this);
 
 

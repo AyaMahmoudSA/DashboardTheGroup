@@ -3,6 +3,8 @@
     package="com.av.dashboardthegroup">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -27,6 +29,12 @@
 
         <activity
             android:name=".MainActivity"
+            android:label="Dashboard"
+            android:icon="@drawable/ic_phone"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".PieChartActivity"
             android:label="Dashboard"
             android:icon="@drawable/ic_phone"
             android:screenOrientation="portrait" />

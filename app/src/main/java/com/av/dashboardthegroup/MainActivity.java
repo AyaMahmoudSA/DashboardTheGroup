@@ -1,50 +1,21 @@
 package com.av.dashboardthegroup;
 
-import android.app.Activity;
-import android.content.ClipData;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.internal.view.menu.ExpandedMenuView;
 import android.support.v7.widget.CardView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ScrollView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.GridLayoutAnimationController;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.av.dashboardthegroup.Adapter.PerferredStockDataAdapter;
 import com.av.dashboardthegroup.Adapter.PortfoliosAdapter;
 import com.av.dashboardthegroup.Expandable.ExpandGridView;
 import com.av.dashboardthegroup.Expandable.ExpandListView;
 import com.av.dashboardthegroup.Model.Portfolios;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,12 +26,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Random;
 
 /**
  * Created by Aya on 02-03-2017.
@@ -80,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public PortfoliosAdapter portfoliosAdapter;
     private ExpandListView listview;
     public  static  ArrayList<Portfolios> get_respone;
+
 
 
     @Override
@@ -102,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         MarketTrasactionValue = (TextView) findViewById(R.id.txt_MarketTrasactionValue);
         TransactionVolume = (TextView) findViewById(R.id.txt_TransactionVolume);
         NoOfMarketTrades = (TextView) findViewById(R.id.txt_NoOfMarketTrades);
-
+ 
 
         //TODO get instance from Firebase to fetch data
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -169,6 +138,9 @@ public class MainActivity extends AppCompatActivity {
         gridView.setExpanded(true);
         gridView.setFocusable(false); // ToDO make Gridview not start at top of screen you have to set.
 
+        Animation animation = AnimationUtils.loadAnimation(this,R.anim.grid_item_anim);
+        GridLayoutAnimationController controller = new GridLayoutAnimationController(animation, .2f, .2f);
+        gridView.setLayoutAnimation(controller);
    /*     cardView=(CardView)findViewById(R.id.cardview);
         Random rnd = new Random();
         int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
@@ -202,16 +174,23 @@ public class MainActivity extends AppCompatActivity {
 
             try {
             //    get_respone.clear();
+                Portfolios full_portfolio = new Portfolios();
+
                 JSONObject   json_object = new JSONObject(getIntent().getStringExtra("Response"));
+                APP.Balance = json_object.getString("Balance");
                 JSONArray get_portfolios = json_object.getJSONArray("portfolios");
                 for (int i = 0; i < get_portfolios.length(); i++) {
-                    JSONObject portfolios = get_portfolios.getJSONObject(i);
-                    JSONObject company = portfolios.getJSONObject("company");
                     Portfolios portfolio = new Portfolios();
+                    JSONObject portfolios = get_portfolios.getJSONObject(i);
+                    portfolio.setMarketValue(portfolios.getString("MarketValue"));
+                    JSONObject company = portfolios.getJSONObject("company");
                     portfolio.setSymbol(company.getString("Symbol"));
                     get_respone.add(portfolio);
+                   // m.put(json_object.getString("Balance"));
+                  //  m.put(i,portfolios.getString("MarketValue"));
                 }
 
+                //   Chart_Data.put("Charts_Data",m);
                 portfoliosAdapter =new PortfoliosAdapter(MainActivity.this,get_respone);
                 listview.setAdapter(portfoliosAdapter);
             } catch (JSONException e) {
