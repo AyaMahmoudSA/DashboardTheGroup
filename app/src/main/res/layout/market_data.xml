@@ -2,12 +2,12 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="340dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_marginTop="10dp"
     android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
     android:background="#f4f6f6"
     android:weightSum="1"
     android:layout_weight="2.50">
@@ -22,151 +22,5 @@
         style="@style/CustomTextViewTitle"
         />
 
-
-    <LinearLayout
-        android:layout_width="350dp"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:weightSum="1"
-        android:layout_marginTop="5dp"
-        android:layout_weight="6.40">
-
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            card_view:cardBackgroundColor="#a2e3fa"
-
-            >
-
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="88dp">
-
-
-                <TextView
-                    android:text="@string/market_index"
-                    android:gravity="center"
-                    android:layout_marginTop="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txt_CurrentMarketIndex"
-                    android:textColor="@color/text_black"
-                    style="@style/CustomTextView" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="5dp">
-
-
-                    <TextView
-                        android:text="@string/market_percentage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txt_ChangePercentage"
-                        android:layout_marginBottom="5dp"
-                        style="@style/CustomTextView"
-                        android:textColor="@color/color_itemtext"
-
-                        android:gravity="left|center"
-                        android:layout_marginLeft="2dp" />
-
-                    <TextView
-                        android:text="@string/marketindex_value"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txt_ChangeValue"
-                        android:layout_marginBottom="5dp"
-                        style="@style/CustomTextView"
-                        android:foregroundGravity="left"
-                        android:gravity="right"
-                        android:textColor="@color/color_itemtext"
-                        android:layout_marginRight="7dp" />
-                </LinearLayout>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            card_view:cardBackgroundColor="#a2e3fa"
-            android:layout_marginLeft="20dp">
-
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="149dp"
-                android:layout_height="88dp"
-                >
-
-
-                <TextView
-                    android:text="@string/market_value"
-                    android:gravity="center"
-                    android:textColor="@color/text_black"
-                    android:layout_marginTop="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/CustomTextView"
-                    android:id="@+id/txt_MarketTrasactionValue"
-                    />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="5dp">
-
-
-                    <TextView
-                        android:text="@string/market_volume"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.15"
-                        style="@style/CustomTextView"
-                        android:layout_marginBottom="5dp"
-                        android:id="@+id/txt_TransactionVolume"
-                        android:gravity="left"
-                        android:textColor="@color/text_black"
-                        />
-
-                    <TextView
-                        android:text="@string/market_trade"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/CustomTextView"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginRight="2dp"
-                        android:textColor="@color/text_black"
-                        android:id="@+id/txt_NoOfMarketTrades"/>
-                </LinearLayout>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-
-        </LinearLayout>
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:orientation="vertical"
-        android:layout_marginTop="7dp">
-<ImageView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:src="@drawable/chart1"/>
-
-    </LinearLayout>
+    <include layout="@layout/try_k"/>
 </LinearLayout>

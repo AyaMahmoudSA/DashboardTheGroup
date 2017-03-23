@@ -1,72 +1,57 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="340dp"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp"
-    android:orientation="vertical"
-  >
+    android:orientation="vertical">
 
     <LinearLayout
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/linear_color"
         android:weightSum="1"
         android:background="@drawable/shadow2"
-        android:layout_height="60dp"
-        android:layout_width="143dp">
+        android:layout_height="55dp"
+        android:layout_width="320dp">
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="2dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginTop="2dp">
+            >
+
 
             <TextView
-                android:textColor="@color/color_itemtext"
-                android:textSize="18sp"
-                android:text="@string/symbol"
-                android:textStyle="bold"
+                android:text="@string/market_index"
+                android:layout_marginTop="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/txt_Symbol"
-                android:layout_marginLeft="12dp"
-                android:layout_gravity="right|center"
-                android:layout_marginBottom="2dp" />
+                android:id="@+id/txt_CurrentMarketIndex"
+                android:textColor="@color/color_itemtext"
+                style="@style/CustomTextView"
+                android:textSize="22sp"
+                android:layout_marginLeft="15dp" />
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <TextView
+                android:text="@string/market_percentage"
+                android:layout_marginTop="11dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_ChangePercentage"
+                android:textColor="@color/color_itemtext"
+                style="@style/CustomTextView"
+                android:textSize="16sp"
+                android:layout_marginLeft="50dp" />
 
-                <TextView
-                    android:text="@string/value"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txt_ChangeValue"
-                    android:layout_marginTop="2dp"
-                    android:textSize="18sp"
-                    android:textColor="@color/color_itemtext"
-
-                    android:layout_marginRight="13dp"
-                    android:layout_gravity="right" />
-
-                <TextView
-                    android:textStyle="bold"
-                    android:textColor="@color/color_itemtext"
-                    android:text="@string/percentage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txt_ChangePercentage"
-                    android:layout_gravity="right"
-                    android:textSize="18sp"
-
-                    android:layout_marginTop="1dp" />
-            </LinearLayout>
+            <TextView
+                android:text="@string/marketindex_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_ChangeValue"
+                android:textColor="@color/color_itemtext"
+                style="@style/CustomTextView"
+                android:textSize="16sp"
+                android:layout_marginTop="11dp"
+                android:layout_marginLeft="55dp" />
         </LinearLayout>
 
 
@@ -74,23 +59,43 @@
 
     <LinearLayout
         android:background="@drawable/shadow2"
-        android:layout_marginLeft="2dp"
-        android:layout_height="35dp"
-        android:layout_width="140dp">
-
+        android:layout_marginLeft="3dp"
+        android:layout_height="45dp"
+        android:layout_width="315dp"
+        android:orientation="horizontal">
 
         <TextView
-            android:text="@string/current_price"
+            android:text="@string/market_value"
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/txt_CurrentPrice"
-            android:textStyle="bold"
-            android:textSize="18sp"
-
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:id="@+id/txt_MarketTrasactionValue"
             android:textColor="@color/text_black"
-            android:layout_gravity="center" />
+            style="@style/CustomTextView"
+            android:textSize="15sp"
+            android:layout_marginLeft="12dp" />
+
+        <TextView
+            android:text="@string/market_volume"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_TransactionVolume"
+            android:textColor="@color/text_black"
+            style="@style/CustomTextView"
+            android:textSize="16sp"
+            android:layout_marginLeft="42dp" />
+
+        <TextView
+            android:text="@string/market_trade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_black"
+            style="@style/CustomTextView"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="28dp"
+            android:id="@+id/txt_NoOfMarketTrades"/>
     </LinearLayout>
 
 

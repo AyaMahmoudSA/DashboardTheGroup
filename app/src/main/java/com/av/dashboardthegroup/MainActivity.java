@@ -8,19 +8,27 @@ import android.support.v7.widget.CardView;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.GridLayoutAnimationController;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.av.dashboardthegroup.Adapter.PerferredStockDataAdapter;
 import com.av.dashboardthegroup.Adapter.PortfoliosAdapter;
 import com.av.dashboardthegroup.Expandable.ExpandGridView;
 import com.av.dashboardthegroup.Expandable.ExpandListView;
+import com.av.dashboardthegroup.Model.MarketChartData;
 import com.av.dashboardthegroup.Model.Portfolios;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.jacksonandroidnetworking.JacksonParserFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +38,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import static android.R.attr.animation;
+
 /**
  * Created by Aya on 02-03-2017.
  */
@@ -37,24 +47,32 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     TextView CurrentMarketIndex, ChangePercentage, ChangeValue,
-            MarketTrasactionValue, TransactionVolume, NoOfMarketTrades;
-  CardView cardView;
+             MarketTrasactionValue, TransactionVolume, NoOfMarketTrades;
+    CardView cardView;
+
+    LinearLayout linearLayout ;
 
     private ExpandGridView gridView;
     public static DataSnapshot dataSnapshot_StocksData;
     public PerferredStockDataAdapter perferredStockDataAdapter;
 
+    ArrayList<MarketChartData> addchartvalue;
+
 
     public PortfoliosAdapter portfoliosAdapter;
     private ExpandListView listview;
     public  static  ArrayList<Portfolios> get_respone;
-
+    Animation animation;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //TODO Make connection to get data
+        AndroidNetworking.initialize(getApplicationContext());
+        AndroidNetworking.setParserFactory(new JacksonParserFactory());
 
         //TODO make logo behind name of activity "Dashboard"
         ActionBar actionbar = getSupportActionBar();
@@ -71,7 +89,9 @@ public class MainActivity extends AppCompatActivity {
         MarketTrasactionValue = (TextView) findViewById(R.id.txt_MarketTrasactionValue);
         TransactionVolume = (TextView) findViewById(R.id.txt_TransactionVolume);
         NoOfMarketTrades = (TextView) findViewById(R.id.txt_NoOfMarketTrades);
- 
+
+        linearLayout   = (LinearLayout) findViewById(R.id.linear_color);
+
 
         //TODO get instance from Firebase to fetch data
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -95,20 +115,22 @@ public class MainActivity extends AppCompatActivity {
                 ChangeValue.setText(get_ChangeValue.getValue().toString());
 
                 if (get_Sign.getValue().toString().equals("+")) {
-                    ChangePercentage.setTextColor(getResources().getColor(R.color.plus_sign));
-                    ChangeValue.setTextColor(getResources().getColor(R.color.plus_sign));
+                    linearLayout.setBackgroundDrawable(MainActivity.this.getResources().getDrawable(R.drawable.shadow_green));                  //  ChangeValue.setTextColor(getResources().getColor(R.color.plus_sign));
 
-                }
-                if (get_Sign.getValue().toString().equals("-")) {
-                    ChangePercentage.setTextColor(getResources().getColor(R.color.minus_sign));
-                    ChangeValue.setTextColor(getResources().getColor(R.color.minus_sign));
+                }else{
 
-                }
-                if (get_Sign.getValue().toString().equals("=")) {
-                    ChangePercentage.setTextColor(getResources().getColor(R.color.equal_sign));
-                    ChangeValue.setTextColor(getResources().getColor(R.color.minus_sign));
+                    if (get_Sign.getValue().toString().equals("-")) {
+                        linearLayout.setBackgroundDrawable(MainActivity.this.getResources().getDrawable(R.drawable.shadow_red));
 
+                    }else{
+                        if (get_Sign.getValue().toString().equals("=")) {
+                            linearLayout.setBackgroundDrawable(MainActivity.this.getResources().getDrawable(R.drawable.shadow_yellow));                  //  ChangeValue.setTextColor(getResources().getColor(R.color.minus_sign));
+
+                        }
+
+                    }
                 }
+
 
                 //TODO Get market data Second box value from Firebase
                 DataSnapshot get_MarketTrasactionValue = dataSnapshot.child("Market_Data").child("MarketTrasactionValue");
@@ -138,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         gridView.setExpanded(true);
         gridView.setFocusable(false); // ToDO make Gridview not start at top of screen you have to set.
 
-        Animation animation = AnimationUtils.loadAnimation(this,R.anim.grid_item_anim);
+        animation = AnimationUtils.loadAnimation(this,R.anim.grid_item_anim);
         GridLayoutAnimationController controller = new GridLayoutAnimationController(animation, .2f, .2f);
         gridView.setLayoutAnimation(controller);
    /*     cardView=(CardView)findViewById(R.id.cardview);
@@ -163,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        //END
 
         //TODO Portfolio
         get_respone=new ArrayList<>();
@@ -183,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
                     Portfolios portfolio = new Portfolios();
                     JSONObject portfolios = get_portfolios.getJSONObject(i);
                     portfolio.setMarketValue(portfolios.getString("MarketValue"));
+                    portfolio.setNoOfStocks(portfolios.getString("NoOfStocks"));
                     JSONObject company = portfolios.getJSONObject("company");
                     portfolio.setSymbol(company.getString("Symbol"));
                     get_respone.add(portfolio);
@@ -196,6 +219,42 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+         //END
+
+         // TODO Get MarketChart
+        AndroidNetworking.get(URL.URL_MarketChartData)
+                .setPriority(Priority.HIGH)
+                .addHeaders("Accept", "application/json")
+                .addHeaders("Content-type", "application/json")
+                .build()
+                .getAsJSONArray(new JSONArrayRequestListener() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+
+                            JSONArray jsonArray=response;
+                            addchartvalue =new ArrayList<>();
+                            for(int i=0 ;i<jsonArray.length();i++){
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                MarketChartData marketChartData=new MarketChartData();
+                                marketChartData.setDate(object.getString("Date"));
+                                marketChartData.setPrice(object.getString("Price"));
+                                addchartvalue.add(marketChartData);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
+
+
 
 
 
@@ -214,6 +273,17 @@ public class MainActivity extends AppCompatActivity {
            String string_Value  = numberFormat.format(double_Value);
            return  string_Value;
        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        animation.cancel();
     }
 
 

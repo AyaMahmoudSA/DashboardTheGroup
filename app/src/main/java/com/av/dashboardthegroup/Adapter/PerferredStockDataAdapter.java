@@ -62,7 +62,7 @@ public class PerferredStockDataAdapter extends BaseAdapter {
         if (convertView == null)
 
         {
-            convertView = inflater.inflate(R.layout.try_k, null);
+            convertView = inflater.inflate(R.layout.row_preferred_data, null);
             holder = new MyViewHoldwer(convertView);
             convertView.setTag(holder);
             Log.d("row", "Creating row");
@@ -73,7 +73,7 @@ public class PerferredStockDataAdapter extends BaseAdapter {
         }
 
 
-      DataSnapshot  child = dataSnap.child(String.valueOf(position));
+        DataSnapshot  child = dataSnap.child(String.valueOf(position));
 
         holder.Symbol.setText(child.child("Symbol").getValue().toString());
 

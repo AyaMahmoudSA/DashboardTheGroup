@@ -38,7 +38,7 @@ public class PieChartActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.try_k);
+     //   setContentView(R.layout.try_k);
 
 
 /*

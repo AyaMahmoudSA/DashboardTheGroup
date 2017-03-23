@@ -11,6 +11,8 @@ public class URL {
 
     public static final String URL_Login = base_json + "jsonLogin.aspx";
     public static final String URL_Portfolio = base_json + "Portfolio.aspx?DataFormat=plain";
+    public static final String URL_MarketChartData = base_json + "GetChartData.aspx";
+
 
 
 

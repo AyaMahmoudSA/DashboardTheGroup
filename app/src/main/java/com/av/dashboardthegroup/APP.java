@@ -1,5 +1,6 @@
 package com.av.dashboardthegroup;
 
+import android.content.Context;
 import android.content.pm.PackageInstaller;
 
 /**
@@ -9,6 +10,8 @@ import android.content.pm.PackageInstaller;
 public class APP {
     public  static String SessionID ="";
     public  static String Balance ="";
+    public  static Context context ;
+
 
 
 }

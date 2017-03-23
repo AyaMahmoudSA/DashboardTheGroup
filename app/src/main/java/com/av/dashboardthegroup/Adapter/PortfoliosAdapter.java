@@ -95,47 +95,74 @@ public class PortfoliosAdapter extends BaseAdapter {
         holder.Symbol.setText(portfolioStock.getSymbol());
 
 
-        String marketvalue=portfolioStock.getMarketValue();
+         String marketvalue=portfolioStock.getMarketValue();
          marketvalue=marketvalue.replaceAll(",", "");
-        float MarketValue=Float.parseFloat(marketvalue);
+         float MarketValue=Float.parseFloat(marketvalue);
 
-        String Balance= APP.Balance;
-        float Totalprice_Balance=Float.parseFloat(Balance);
+        String noofstocks=portfolioStock.getNoOfStocks();
+        float NoOfStocks=Float.parseFloat(noofstocks);
 
-        float Revenue=20000;
+        Float CurrentValue =  MarketValue *  NoOfStocks ;
+        holder. mChart.getDescription().setEnabled(false);
+     //   holder. mChart.setExtraOffsets(5, 10, 5, 5);
+
+          float CostPrice= 1000;
+          float Revenue = CurrentValue - CostPrice;
+
+
+
+
+        // enable rotation of the chart by touch
+        holder. mChart.setRotationEnabled(true);
+        holder. mChart.setHighlightPerTapEnabled(true);
+
+        // mChart.setUnit(" €");
+        // mChart.setDrawUnitsInChart(true);
 
         List<PieEntry> pieEntries =new ArrayList<>();
-        float chart_value []={MarketValue,Totalprice_Balance,Revenue};
-        String chart_name []={"M","T","R"};
+        float chart_value []={CurrentValue,CostPrice,Revenue};
+        String chart_name []={"Current Value ","Cost Price","Revenue"};
 
         for(int i=0;i<chart_value.length; i++){
 
-                pieEntries.add(new PieEntry(chart_value[i],chart_name[i]));
+                pieEntries.add(new PieEntry(chart_value[i]  ,chart_name[i],"%"));
 
         }
 
         PieDataSet dataSet =new PieDataSet(pieEntries,"Portfolios Charts");
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
 
         PieData data=new PieData(dataSet);
 
         holder.mChart.setData(data);
-        holder.mChart.setCenterTextColor(Color.BLACK);
         holder.mChart.getDescription().setEnabled(false);
 
-       // data.setValueFormatter(new PercentFormatter());
-        data.setValueTextColor(Color.BLACK);
 
-       // data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(15f);
-        data.setValueTextColor(Color.BLACK);
+        data.setValueTextSize(14f);
         data.setValueTypeface(Typeface.DEFAULT_BOLD);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
         // undo all highlights
-        holder.mChart.highlightValues(null);
         holder. mChart.setData(data);
         holder. mChart.animateX(1000);
         // update pie chart
         holder. mChart.invalidate();
+
+        Legend l =  holder.mChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(false);
+        l.setXEntrySpace(10f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
+
+        // entry label styling
+        holder. mChart.setEntryLabelColor(Color.BLACK);
+        holder.mChart.setEntryLabelTextSize(9f);
+        holder. mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
+        holder. mChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
      /*   */
 
 

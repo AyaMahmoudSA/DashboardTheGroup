@@ -11,9 +11,9 @@ public class Portfolios {
 
     public String Totalprice;
     public String Balance;
+    public String NoOfStocks;
 
-
- /*   public String NoOfStocks;
+ /*
     public String NameEn;
     public String NameAr;
     public String LastClose;
@@ -64,6 +64,14 @@ public class Portfolios {
 
     public void setBalance(String balance) {
         Balance = balance;
+    }
+
+    public String getNoOfStocks() {
+        return NoOfStocks;
+    }
+
+    public void setNoOfStocks(String noOfStocks) {
+        NoOfStocks = noOfStocks;
     }
 
 /*
@@ -153,13 +161,7 @@ public class Portfolios {
 
 
 
-    public String getNoOfStocks() {
-        return NoOfStocks;
-    }
-
-    public void setNoOfStocks(String noOfStocks) {
-        NoOfStocks = noOfStocks;
-    }*/
+  */
 
 
 

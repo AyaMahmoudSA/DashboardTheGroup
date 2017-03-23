@@ -12,15 +12,20 @@ import android.widget.Toast;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.av.dashboardthegroup.Model.MarketChartData;
+import com.av.dashboardthegroup.data.StoreData;
 import com.jacksonandroidnetworking.JacksonParserFactory;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -33,11 +38,15 @@ public class LoginActivity extends Activity {
 
     EditText Investor_No,Password;
     Button Login;
+    Intent success;
     /** Called when the activity is first created */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        APP.context=this;
+
         AndroidNetworking.initialize(getApplicationContext());
         AndroidNetworking.setParserFactory(new JacksonParserFactory());
 
@@ -49,9 +58,12 @@ public class LoginActivity extends Activity {
         Calendar cal = Calendar.getInstance();
         String today = dateFormat.format(cal.getTime());
         Toast.makeText(LoginActivity.this,today,Toast.LENGTH_SHORT).show();
-        cal.add(Calendar.MONTH,-1);
+        cal.add(Calendar.DAY_OF_WEEK,-7);
         String before = dateFormat.format(cal.getTime());
         Toast.makeText(LoginActivity.this,before,Toast.LENGTH_SHORT).show();
+
+        Investor_No.setText(new StoreData().LoadInvestor_No());
+        Password.setText(new StoreData().LoadPassword());
 
 
 /*
@@ -61,12 +73,12 @@ public class LoginActivity extends Activity {
 
 
 
-
  Login.setOnClickListener(new View.OnClickListener() {
                               @Override
                               public void onClick(View v) {
                                   if (AppStatus.getInstance(LoginActivity.this).isOnline()) {
                                       Toast.makeText(LoginActivity.this, "You are online!!!!", Toast.LENGTH_SHORT).show();
+
                                       String getInvestor_No = Investor_No.getText().toString().trim();
                                       String getpassword = Password.getText().toString().trim();
                                       Parse_Login(getInvestor_No,getpassword);
@@ -84,6 +96,11 @@ public class LoginActivity extends Activity {
                           }
 
        );
+
+
+        //ToDO Get Market Chart Data
+
+
 
     }
 
@@ -104,6 +121,7 @@ public class LoginActivity extends Activity {
             Request_Login.put("Version", "1");
             Request_Login.put("LstLogin", "");
 
+
             AndroidNetworking
                     .post(URL.URL_Login)
                     .addHeaders("Accept", "application/json")
@@ -121,11 +139,15 @@ public class LoginActivity extends Activity {
                                     APP.SessionID = response.getJSONObject("Message").getJSONObject("LogResponse").getString("SessionID");
                                     //   Toast.makeText(LoginActivity.this, APP.SessionID, Toast.LENGTH_SHORT).show();
                                     String strUserName = Investor_No.getText().toString().trim();
+                                    new StoreData().SaveInvestor_No(Investor_No.getText().toString().trim());
                                     String password = Password.getText().toString().trim();
+                                    new StoreData().SavePassword(Password.getText().toString().trim());
+
                                     JSONObject Portfolio_Request = new JSONObject();
                                     Portfolio_Request.put("NIN",strUserName);
                                     Portfolio_Request.put("Password", password);
                                     Portfolio_Request.put("MobileNumber", "");
+
 
                                     AndroidNetworking
                                             .post(URL.URL_Portfolio)
@@ -137,7 +159,7 @@ public class LoginActivity extends Activity {
                                             .getAsJSONObject(new JSONObjectRequestListener() {
                                                 @Override
                                                 public void onResponse(JSONObject response) {
-                                                    Intent success = new Intent(LoginActivity.this, MainActivity.class);
+                                                    success = new Intent(LoginActivity.this, MainActivity.class);
                                                     success.putExtra("Response", response.toString());
                                                     startActivity(success);
 
@@ -150,6 +172,8 @@ public class LoginActivity extends Activity {
                                             });
 
 
+
+
                                 } else {
                                     String error = response.getJSONObject("ResponseStatus").getString("ResDesc");
                                     Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
@@ -157,6 +181,8 @@ public class LoginActivity extends Activity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
+
                         }
                         @Override
                         public void onError(ANError anError) {
