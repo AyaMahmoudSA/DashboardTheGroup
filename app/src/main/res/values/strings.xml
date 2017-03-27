@@ -12,7 +12,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
 
-    <string name="market_data">Market Data</string>
+    <string name="market_data">بيانات السوق</string>
 
     <string name="market_index">10,594.13</string>
     <string name="marketindex_value">127.02</string>
@@ -34,14 +34,15 @@
 
 
 
-    <string name="preferred">Preferred</string>
+    <string name="preferred">المفضلة</string>
     <string name="symbol"> Mark </string>
     <string name="current_price"> 40.75 </string>
     <string name="percentage"> 0.12% </string>
     <string name="value"> 0.05 </string>
+    <string name="symbol_ar"> الريان ب </string>
 
 
-    <string name="portfolio">Portfolio</string>
+    <string name="portfolio">المحفظة</string>
     <string name="p_value">value</string>
     <string name="p_balance">Balance</string>
     <string name="p_reverne">Revenue</string>

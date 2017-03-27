@@ -13,11 +13,33 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.av.dashboardthegroup.JSONParser;
 import com.av.dashboardthegroup.MainActivity;
+import com.av.dashboardthegroup.Model.MarketChartData;
+import com.av.dashboardthegroup.Model.StockChartData;
 import com.av.dashboardthegroup.R;
+import com.av.dashboardthegroup.URL;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.firebase.database.DataSnapshot;
+import com.jacksonandroidnetworking.JacksonParserFactory;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -27,11 +49,11 @@ import java.util.Random;
 public class PerferredStockDataAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-
+    ArrayList<StockChartData> addchartvalue;
     DataSnapshot dataSnap;
     private Activity activity;
     MyViewHoldwer holder = null;
-
+    List<Entry> yVals1;
     public PerferredStockDataAdapter(Activity a,DataSnapshot get_data) {
         dataSnap=get_data;
         activity=a;
@@ -41,7 +63,7 @@ public class PerferredStockDataAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        return (int)dataSnap.getChildrenCount()-34;
+        return (int)dataSnap.getChildrenCount()-36;
     }
 
     @Override
@@ -62,7 +84,7 @@ public class PerferredStockDataAdapter extends BaseAdapter {
         if (convertView == null)
 
         {
-            convertView = inflater.inflate(R.layout.row_preferred_data, null);
+            convertView = inflater.inflate(R.layout.row_preferred_data_ar, null);
             holder = new MyViewHoldwer(convertView);
             convertView.setTag(holder);
             Log.d("row", "Creating row");
@@ -72,10 +94,9 @@ public class PerferredStockDataAdapter extends BaseAdapter {
             Log.d("row", "Recycling use");
         }
 
-
         DataSnapshot  child = dataSnap.child(String.valueOf(position));
 
-        holder.Symbol.setText(child.child("Symbol").getValue().toString());
+        holder.Symbol.setText(child.child("NameAr").getValue().toString());
 
         String get_CurrentPrice = BigDecimal(child.child("CurrentPrice").getValue().toString());
         holder.CurrentPrice.setText(get_CurrentPrice);
@@ -86,30 +107,119 @@ public class PerferredStockDataAdapter extends BaseAdapter {
         String get_ChangeValue = BigDecimal(child.child("ChangeValue").getValue().toString());
         holder.ChangeValue.setText(get_ChangeValue);
 
-
-
         if(child.child("ChangeSign").getValue().toString().equals("+")){
 
-
          holder.linearLayout.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.shadow_green));
-           // holder.ChangeValue.setTextColor(activity.getResources().getColor(R.color.plus_sign));
 
         }
         if(child.child("ChangeSign").getValue().toString().equals("-")){
             holder.linearLayout.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.shadow_red));
 
-            //    holder.linearLayout.setBackgroundColor(activity.getResources().getColor(R.color.minus_sign));
-            //holder.ChangeValue.setTextColor(activity.getResources().getColor(R.color.minus_sign));
+
 
         }
         if(child.child("ChangeSign").getValue().toString().equals("=")) {
             holder.linearLayout.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.shadow_yellow));
 
-            // holder.linearLayout.setBackgroundColor(activity.getResources().getColor(R.color.equal_sign));
-            //holder.ChangeValue.setTextColor(activity.getResources().getColor(R.color.minus_sign));
-
         }
 
+/*
+    try {
+        JSONParser jParser = new JSONParser();
+        String URL_Chart= URL.URL_StockChartData+"?type=2&symbol="+child.child("Symbol").getValue();
+        JSONArray json = jParser.getJSONArrFromUrl(URL_Chart);
+        addchartvalue=new ArrayList<>();
+         for (int i = 0; i < json.length(); i++) {
+                                JSONObject object = json.getJSONObject(i);
+                                StockChartData stockChartData = new StockChartData();
+                                stockChartData.setDate(object.getString("Date"));
+                                stockChartData.setPrice(object.getString("Price"));
+                                addchartvalue.add(stockChartData);
+                            }
+
+                            yVals1 = new ArrayList<Entry>();
+                            for (int i = 0; i < addchartvalue.size(); i++) {
+                                StockChartData h = addchartvalue.get(i);
+                                float P[] = {Float.parseFloat(h.getPrice())};
+                                String output = h.getDate().substring(10, 16);
+                                String output_hours = output.substring(1, 3);//09
+                                String output_seconds = output.substring(4, 6);//09
+                                String trim_hours;
+                                if (output_hours.startsWith("0")) {
+                                    trim_hours = output_hours.substring(1, 2);
+                                } else {
+                                    trim_hours = output_hours;
+                                }
+                                String Time = trim_hours + "." + output_seconds;
+                                float fTime = Float.parseFloat(Time);
+
+                                float D[] = {fTime};
+                                for (int j = 0; j < P.length; j++) {
+
+                                    yVals1.add(new Entry(D[j], P[j]));
+
+                                }
+
+                                LineDataSet dataSet = new LineDataSet(yVals1,"");
+                                dataSet.setDrawCircles(false);
+                                dataSet.setDrawValues(false);
+                                dataSet.setLineWidth(2f);
+                                dataSet.setColor(activity.getResources().getColor(R.color.chart_color));
+                                // instantiate pie data object now
+                                LineData data = new LineData(dataSet);
+                                holder.mChart.setData(data);
+                                holder.mChart.animateX(2500);
+                                holder.mChart.setDrawBorders(false);
+                                holder.mChart.setDrawGridBackground(false);
+                                holder.mChart.getDescription().setEnabled(false);
+                                holder.mChart.setAutoScaleMinMaxEnabled(true);
+
+                                // remove axis
+                                YAxis leftAxis = holder.mChart.getAxisLeft();
+                                leftAxis.setEnabled(true);
+
+                                YAxis rightAxis = holder.mChart.getAxisRight();
+                                rightAxis.setEnabled(false);
+
+                                XAxis xAxis = holder.mChart.getXAxis();
+                                xAxis.setEnabled(true);
+
+
+                                // Shiow legend
+                                Legend l = holder.mChart.getLegend();
+                                // modify the legend ...
+                                l.setForm(Legend.LegendForm.LINE);
+                                l.setTextSize(12f);
+                                l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+                                l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+                                l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+                                l.setDrawInside(false);
+
+
+                            }
+
+
+
+                        }
+
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+
+
+*/
+
+
+
+        //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+
+        //    data.setValueFormatter(new PercentFormatter());
+
+        // undo all highlights
 
 
         /*    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -157,6 +267,8 @@ public class PerferredStockDataAdapter extends BaseAdapter {
     static  class MyViewHoldwer {
         TextView Symbol, CurrentPrice, ChangePercentage, ChangeValue;
         LinearLayout linearLayout;
+        LineChart mChart;
+
 
         public MyViewHoldwer(View v) {
             Symbol = (TextView) v.findViewById(R.id.txt_Symbol);
@@ -164,6 +276,7 @@ public class PerferredStockDataAdapter extends BaseAdapter {
             ChangePercentage = (TextView) v.findViewById(R.id.txt_ChangePercentage);
             ChangeValue = (TextView) v.findViewById(R.id.txt_ChangeValue);
             linearLayout =(LinearLayout)v.findViewById(R.id.linear_color);
+            mChart=(LineChart) v.findViewById(R.id.line_chart);
             v.setTag(this);
 
 
@@ -176,6 +289,13 @@ public class PerferredStockDataAdapter extends BaseAdapter {
         String result = string_value.toString();
 
         return  result ;
+    }
+
+    public  void DrawChart(final String Symbol){
+
+
+
+
     }
 }
 

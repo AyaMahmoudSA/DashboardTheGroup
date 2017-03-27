@@ -55,7 +55,6 @@ public class PortfoliosAdapter extends BaseAdapter {
         activity=a;
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-
     }
     @Override
     public int getCount() {
@@ -92,7 +91,7 @@ public class PortfoliosAdapter extends BaseAdapter {
         Portfolios portfolioStock = new Portfolios();
         portfolioStock=get_data.get(position);
 
-        holder.Symbol.setText(portfolioStock.getSymbol());
+        holder.Symbol.setText(portfolioStock.getNameAr());
 
 
          String marketvalue=portfolioStock.getMarketValue();
@@ -111,7 +110,6 @@ public class PortfoliosAdapter extends BaseAdapter {
 
 
 
-
         // enable rotation of the chart by touch
         holder. mChart.setRotationEnabled(true);
         holder. mChart.setHighlightPerTapEnabled(true);
@@ -121,7 +119,7 @@ public class PortfoliosAdapter extends BaseAdapter {
 
         List<PieEntry> pieEntries =new ArrayList<>();
         float chart_value []={CurrentValue,CostPrice,Revenue};
-        String chart_name []={"Current Value ","Cost Price","Revenue"};
+        String chart_name []={"القيمة الحالية","سعر التكلفة","الربح"};
 
         for(int i=0;i<chart_value.length; i++){
 
@@ -129,7 +127,7 @@ public class PortfoliosAdapter extends BaseAdapter {
 
         }
 
-        PieDataSet dataSet =new PieDataSet(pieEntries,"Portfolios Charts");
+        PieDataSet dataSet =new PieDataSet(pieEntries,"الرسوم البيانية للمحفظة");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);

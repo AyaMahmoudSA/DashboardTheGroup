@@ -15,7 +15,9 @@
     <color name="plus_sign">#008d00</color>
     <color name="minus_sign">#e50000</color>
     <color name="equal_sign">#ffcc00</color>
+    <color name="chart_color">#0080ff</color>
 
+    #6666ff
 
 
 </resources>

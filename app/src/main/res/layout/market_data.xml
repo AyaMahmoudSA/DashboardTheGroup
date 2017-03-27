@@ -22,5 +22,6 @@
         style="@style/CustomTextViewTitle"
         />
 
-    <include layout="@layout/try_k"/>
+    <include layout="@layout/market_box"/>
+    <include layout="@layout/market_chart"/>
 </LinearLayout>

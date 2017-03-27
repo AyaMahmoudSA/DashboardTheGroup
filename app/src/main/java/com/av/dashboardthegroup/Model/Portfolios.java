@@ -8,10 +8,11 @@ public class Portfolios {
 
     public String Symbol;
     public String MarketValue;
-
     public String Totalprice;
     public String Balance;
     public String NoOfStocks;
+    public String NameAr;
+
 
  /*
     public String NameEn;
@@ -72,6 +73,14 @@ public class Portfolios {
 
     public void setNoOfStocks(String noOfStocks) {
         NoOfStocks = noOfStocks;
+    }
+
+    public String getNameAr() {
+        return NameAr;
+    }
+
+    public void setNameAr(String nameAr) {
+        NameAr = nameAr;
     }
 
 /*

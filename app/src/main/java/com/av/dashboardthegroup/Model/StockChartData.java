@@ -1,12 +1,10 @@
 package com.av.dashboardthegroup.Model;
 
 /**
- * Created by Maiada on 3/23/2017.
+ * Created by Maiada on 3/27/2017.
  */
 
-public class MarketChartData {
-
-
+public class StockChartData {
     public String Date;
     public String Price;
 
@@ -28,9 +26,4 @@ public class MarketChartData {
     public void setPrice(String price) {
         Price = price;
     }
-
-
-
-
-
 }
