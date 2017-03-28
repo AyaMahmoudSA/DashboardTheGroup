@@ -98,10 +98,6 @@
 
 
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/line_chart"
-        android:layout_height="143dp"
-        android:layout_width="143dp"
-        android:layout_weight="0.07" />
+
 
 </LinearLayout>

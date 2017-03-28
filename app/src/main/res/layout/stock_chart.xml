@@ -7,6 +7,14 @@
     android:orientation="vertical"
     android:weightSum="1">
 
+    <com.av.dashboardthegroup.Expandable.ExpandListView
+        android:id="@+id/lv_stockchart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:orientation="vertical"
+        android:nestedScrollingEnabled="true"
+        android:fadingEdge="none"/>
 
 
 </LinearLayout>

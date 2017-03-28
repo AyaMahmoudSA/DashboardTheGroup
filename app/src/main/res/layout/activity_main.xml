@@ -23,6 +23,7 @@
 
             <include layout="@layout/market_data"/>
             <include layout="@layout/activity_preferred"/>
+            <include layout="@layout/stock_chart"/>
             <include layout="@layout/activity_portfolio"/>
 
 

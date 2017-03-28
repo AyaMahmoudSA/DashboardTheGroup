@@ -5,13 +5,21 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.GridLayoutAnimationController;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -19,6 +27,7 @@ import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.av.dashboardthegroup.Adapter.PerferredStockDataAdapter;
 import com.av.dashboardthegroup.Adapter.PortfoliosAdapter;
+import com.av.dashboardthegroup.Adapter.StockChartAdapter;
 import com.av.dashboardthegroup.Expandable.ExpandGridView;
 import com.av.dashboardthegroup.Expandable.ExpandListView;
 import com.av.dashboardthegroup.Model.MarketChartData;
@@ -44,6 +53,7 @@ import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,27 +68,36 @@ public class MainActivity extends AppCompatActivity {
     TextView CurrentMarketIndex, ChangePercentage, ChangeValue,
              MarketTrasactionValue, TransactionVolume, NoOfMarketTrades;
     CardView cardView;
-
     LinearLayout linearLayout ;
-
-    private ExpandGridView gridView;
-    public static DataSnapshot dataSnapshot_StocksData;
-    public PerferredStockDataAdapter perferredStockDataAdapter;
-
-    ArrayList<MarketChartData> addchartvalue;
-    ArrayList<StockChartData> addchartvalue_stock;
-
-
-    public PortfoliosAdapter portfoliosAdapter;
+    public static ExpandGridView gridView;
     private ExpandListView listview;
-    public  static  ArrayList<Portfolios> get_respone;
+    public static ExpandListView listview_stockchart;
+
     Animation animation;
 
+    HashMap<String,ArrayList<StockChartData>> a;
+    int s;
+
+    public static DataSnapshot dataSnapshot_StocksData;
+
+    ArrayList<MarketChartData> addchartvalue;
+    public  static  ArrayList<Portfolios> get_respone;
+
+    List<String> company_symbols;
+
+    public PerferredStockDataAdapter perferredStockDataAdapter;
+    public PortfoliosAdapter portfoliosAdapter;
+    public StockChartAdapter stockChartAdapter;
+
+    RequestQueue gd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        gd= Volley.newRequestQueue(this);
+
 
         //TODO Make connection to get data
         AndroidNetworking.initialize(getApplicationContext());
@@ -184,10 +203,67 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DataSnapshot get_StocksData = dataSnapshot.child("Stocks_Data");
+                company_symbols=new ArrayList<String>();
+
+                for(int i=0;i<get_StocksData.getChildrenCount()-36;i++) {
+                    DataSnapshot child = get_StocksData.child(String.valueOf(i));
+
+                        company_symbols.add(child.child("Symbol").getValue().toString());
+
+
+
+                }
+
+                a=new HashMap<String, ArrayList<StockChartData>>();
+
+
+                for(s=0;s<company_symbols.size();s++) {
+                    String URL_Chart = URL.URL_StockChartData + "?type=2&symbol=" + company_symbols.get(s);
+                    // Toast.makeText(activity,getcompany_symbols.get(position),Toast.LENGTH_SHORT).show();
+
+                    JsonArrayRequest m = new JsonArrayRequest(Request.Method.GET, URL_Chart, new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+
+                            try {
+                                JSONArray jsonArray = response;
+                                ArrayList<StockChartData> addchartvalue = new ArrayList<>();
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject object = jsonArray.getJSONObject(i);
+                                    StockChartData stockChartData = new StockChartData();
+                                    stockChartData.setDate(object.getString("Date"));
+                                    stockChartData.setPrice(object.getString("Price"));
+                                    addchartvalue.add(stockChartData);
+                                }
+                                // String x="";
+                                a.put(company_symbols.get(s),addchartvalue);
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+
+                        }
+
+                    }, null);
+
+                    gd.add(m);
+                    gd.start();
+                }
+
+
+/*
+                stockChartAdapter = new StockChartAdapter(MainActivity.this,company_symbols);
+                listview_stockchart.setAdapter(stockChartAdapter);*/
+
+                /*
                 for(int i=0;i<get_StocksData.getChildrenCount()-36;i++){
                     DataSnapshot  child = get_StocksData.child(String.valueOf(i));
 
-                    String URL_Chart= URL.URL_StockChartData+"?type=2&symbol="+child.child("Symbol").getValue();
+                    *//*String URL_Chart= URL.URL_StockChartData+"?type=2&symbol="+child.child("Symbol").getValue();
                     AndroidNetworking.get(URL_Chart)
                             .setPriority(Priority.HIGH)
                             .addHeaders("Accept", "application/json")
@@ -221,16 +297,57 @@ public class MainActivity extends AppCompatActivity {
 
                                 }
                             });
+*//*
 
 
-
-                }
+                }*/
 
 
             //    dataSnapshot_StocksData = get_StocksData;
                 perferredStockDataAdapter = new PerferredStockDataAdapter(MainActivity.this,get_StocksData);
                 gridView.setAdapter(perferredStockDataAdapter);
 
+
+
+                /*gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                      DataSnapshot  dataSnap = dataSnapshot_StocksData.child(String.valueOf(position));
+
+
+
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setTitle("Make your selection");
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                // Do something with the selection
+                                if (items[item].equals("BUY")) {
+                                    //getCapturesProfilePicFromCamera();
+                                    Intent i=new Intent(MainActivity.this,orderactivity.class);
+                                    i.putExtra("Symbol",dataSnap.child("Symbol").getValue().toString());
+
+                                    startActivity(i);
+
+
+
+                                } else if (items[item].equals("Choose from Library")) {
+                                    Toast.makeText(MainActivity.this,items[item], Toast.LENGTH_SHORT).show();
+                                } else if (items[item].equals("Cancel")) {
+                                    dialog.dismiss();
+                                }                        }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+
+                        *//**//*
+
+
+
+                    }
+                });
+*/
             }
 
             @Override
@@ -375,6 +492,11 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
+        //TODO Preferred
+        listview_stockchart = new ExpandListView(this);
+        listview_stockchart = (ExpandListView) findViewById(R.id.lv_stockchart);
+        listview_stockchart.setExpanded(true);
+        listview_stockchart.setFocusable(false);
 
 
 

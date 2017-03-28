@@ -9,9 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -42,6 +44,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.av.dashboardthegroup.MainActivity.dataSnapshot_StocksData;
+import static com.av.dashboardthegroup.MainActivity.gridView;
+
 /**
  * Created by Aya on 3/14/2017.
  */
@@ -49,7 +54,7 @@ import java.util.Random;
 public class PerferredStockDataAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    ArrayList<StockChartData> addchartvalue;
+    static  ArrayList<StockChartData> addchartvalue;
     DataSnapshot dataSnap;
     private Activity activity;
     MyViewHoldwer holder = null;
@@ -122,6 +127,111 @@ public class PerferredStockDataAdapter extends BaseAdapter {
             holder.linearLayout.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.shadow_yellow));
 
         }
+
+     /*   String []symbols={child.child("Symbol").getValue().toString()};
+
+        for(int k=0;k<symbols.length;k++){
+          //  Toast.makeText(activity,symbols[k],Toast.LENGTH_SHORT).show();
+
+            String URL_Chart= URL.URL_StockChartData+"?type=2&symbol="+symbols[k];
+            AndroidNetworking.get(URL_Chart)
+                    .setPriority(Priority.HIGH)
+                    .addHeaders("Accept", "application/json")
+                    .addHeaders("Content-type", "application/json")
+                    .build()
+                    .getAsJSONArray(new JSONArrayRequestListener() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            try {
+                                JSONArray jsonArray = response;
+                                addchartvalue = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject object = jsonArray.getJSONObject(i);
+                                    StockChartData stockChartData = new StockChartData();
+                                    stockChartData.setDate(object.getString("Date"));
+                                    stockChartData.setPrice(object.getString("Price"));
+                                    addchartvalue.add(stockChartData);
+                                }
+
+
+
+                            }
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+
+                        }
+                    });
+
+            yVals1 = new ArrayList<Entry>();
+            for (int i = 0; i < addchartvalue.size(); i++) {
+                StockChartData h = addchartvalue.get(i);
+                // Toast.makeText(activity,h.toString(),Toast.LENGTH_SHORT).show();
+
+                float P[] = {Float.parseFloat(h.getPrice())};
+                String output = h.getDate().substring(10, 16);
+                String output_hours = output.substring(1, 3);//09
+                String output_seconds = output.substring(4, 6);//09
+                String trim_hours;
+                if (output_hours.startsWith("0")) {
+                    trim_hours = output_hours.substring(1, 2);
+                } else {
+                    trim_hours = output_hours;
+                }
+                String Time = trim_hours + "." + output_seconds;
+                float fTime = Float.parseFloat(Time);
+
+                float D[] = {fTime};
+                for (int j = 0; j < P.length; j++) {
+
+                    yVals1.add(new Entry(D[j], P[j]));
+
+                }
+
+                LineDataSet dataSet = new LineDataSet(yVals1, "");
+                //    Toast.makeText(activity,yVals1.toString(),Toast.LENGTH_SHORT).show();
+                dataSet.setDrawCircles(false);
+                dataSet.setDrawValues(false);
+                dataSet.setLineWidth(2f);
+                dataSet.setColor(activity.getResources().getColor(R.color.chart_color));
+                // instantiate pie data object now
+                LineData data = new LineData(dataSet);
+                holder.mChart.setData(data);
+                holder.mChart.animateX(2500);
+                holder.mChart.setDrawBorders(false);
+                holder.mChart.setDrawGridBackground(false);
+                holder.mChart.getDescription().setEnabled(false);
+                holder.mChart.setAutoScaleMinMaxEnabled(true);
+
+                // remove axis
+                YAxis leftAxis = holder.mChart.getAxisLeft();
+                leftAxis.setEnabled(true);
+
+                YAxis rightAxis = holder.mChart.getAxisRight();
+                rightAxis.setEnabled(false);
+
+                XAxis xAxis = holder.mChart.getXAxis();
+                xAxis.setEnabled(true);
+
+
+                // Shiow legend
+                Legend l = holder.mChart.getLegend();
+                // modify the legend ...
+                l.setForm(Legend.LegendForm.LINE);
+                l.setTextSize(12f);
+                l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+                l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+                l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+                l.setDrawInside(false);
+            }
+
+            }
+*/
 
 /*
     try {
@@ -222,13 +332,16 @@ public class PerferredStockDataAdapter extends BaseAdapter {
         // undo all highlights
 
 
-        /*    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        /* gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                     dataSnap = dataSnapshot_StocksData.child(String.valueOf(position));
 
-                    final CharSequence[] items = {"BUY", "SELL", "Cancel"};
+
+
+                  *//*  final CharSequence[] items = {"BUY", "SELL", "Cancel"};
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("Make your selection");
@@ -253,12 +366,26 @@ public class PerferredStockDataAdapter extends BaseAdapter {
                     AlertDialog alert = builder.create();
                     alert.show();
 
-
+*//*
 
 
 
                 }
             });*/
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                DataSnapshot  child = dataSnap.child(String.valueOf(position));
+
+
+
+
+                }
+
+        });
+
 
         return convertView;
     }
