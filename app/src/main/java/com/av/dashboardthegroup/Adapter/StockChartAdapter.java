@@ -16,6 +16,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.av.dashboardthegroup.MainActivity;
+import com.av.dashboardthegroup.Model.MarketChartData;
 import com.av.dashboardthegroup.Model.Portfolios;
 import com.av.dashboardthegroup.Model.StockChartData;
 import com.av.dashboardthegroup.R;
@@ -28,12 +30,14 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.google.firebase.database.DataSnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.av.dashboardthegroup.MainActivity.listview_stockchart;
@@ -50,19 +54,27 @@ public class StockChartAdapter  extends BaseAdapter{
     StockChartAdapter.MyViewHoldwer holder = null;
     List<String> getcompany_symbols;
     List<String> getcompany_symbolsdata;
-    List<Entry> yVals1;
+    List<Entry> yVals1=new ArrayList<>();
     public static ArrayList<StockChartData> chartresult;
+    HashMap<String, ArrayList<StockChartData>> dataSnap;
+    HashMap<String, ArrayList<StockChartData>> dataSnap2;
+   // ArrayList<ArrayList<StockChartData>> addchartvalue_stock2;
+    ArrayList<StockChartData> addchartvalue_stock3;
+    List<Entry> yVals2;
+    DataSnapshot dataSnapshot;
+    ArrayList<ArrayList<StockChartData>> addchartvalue_stock2;
+    ArrayList<StockChartData> addchartvalue_stock;
 
 
-    public StockChartAdapter(Activity a, List<String> data ){
-        getcompany_symbols=data;
+    public StockChartAdapter(Activity a,DataSnapshot data ){
+        dataSnapshot=data;
         activity=a;
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
     @Override
     public int getCount() {
-        return getcompany_symbols.size();
+        return (int)dataSnapshot.getChildrenCount()-42;
     }
 
     @Override
@@ -78,7 +90,6 @@ public class StockChartAdapter  extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null)
-
         {
             convertView = inflater.inflate(R.layout.row_prefferred_chart, null);
             holder = new StockChartAdapter.MyViewHoldwer(convertView);
@@ -89,90 +100,108 @@ public class StockChartAdapter  extends BaseAdapter{
             holder = (StockChartAdapter.MyViewHoldwer) convertView.getTag();
             Log.d("row", "Recycling use");
         }
-/*
-        listview_stockchart.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {*/
 
-        String URL_Chart = URL.URL_StockChartData + "?type=2&symbol=" + getcompany_symbols.get(position);
-               // Toast.makeText(activity,getcompany_symbols.get(position),Toast.LENGTH_SHORT).show();
-                AndroidNetworking.get(URL_Chart)
-                        .setPriority(Priority.HIGH)
-                        .addHeaders("Accept", "application/json")
-                        .addHeaders("Content-type", "application/json")
-                        .build()
-                        .getAsJSONArray(new JSONArrayRequestListener() {
-                            @Override
-                            public void onResponse(JSONArray response) {
-                                try {
-                                    JSONArray jsonArray = response;
-                                     ArrayList<StockChartData> addchartvalue=new ArrayList<>();
+        addchartvalue_stock=new ArrayList<>();
+        addchartvalue_stock2=new ArrayList<>();
+  //      for(int j=0;j<dataSnapshot.getChildren;j++)
+        for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject object = jsonArray.getJSONObject(i);
-                                        StockChartData stockChartData = new StockChartData();
-                                        stockChartData.setDate(object.getString("Date"));
-                                        stockChartData.setPrice(object.getString("Price"));
-                                        addchartvalue.add(stockChartData);
-                                    }
+          //  Symbols =child.getKey();
+for(int i=0;i<child.getChildrenCount();i++){}
+            for (DataSnapshot chil : child.getChildren()) {
 
+                StockChartData m=new StockChartData();
+                m.setDate(chil.child("Date").getValue().toString());
+                m.setPrice(chil.child("Price").getValue().toString());
+                addchartvalue_stock.add(m);
 
-                               // sendData(addchartvalue);
-                                    LineDataSet dataSet = new LineDataSet(sendData(addchartvalue), "");
-                                    //    Toast.makeText(activity,yVals1.toString(),Toast.LENGTH_SHORT).show();
-                                    dataSet.setDrawCircles(false);
-                                    dataSet.setDrawValues(false);
-                                    dataSet.setLineWidth(2f);
-                                    dataSet.setColor(activity.getResources().getColor(R.color.chart_color));
-                                    // instantiate pie data object now
-                                    LineData data = new LineData(dataSet);
-                                    holder.mChart.setData(data);
-                                    holder.mChart.animateX(2500);
-                                    holder.mChart.setDrawBorders(false);
-                                    holder.mChart.setDrawGridBackground(false);
-                                    holder.mChart.getDescription().setEnabled(false);
-                                    holder.mChart.setAutoScaleMinMaxEnabled(true);
+                        /*StockChartData m=child.child(String.valueOf(i));
+                        m.setDate(child.child("Date").getValue().toString());
+                        m.setPrice(child.child("Price").getValue().toString());
+*/
+            }
+            addchartvalue_stock2.add(addchartvalue_stock);
 
-                                    // remove axis
-                                    YAxis leftAxis = holder.mChart.getAxisLeft();
-                                    leftAxis.setEnabled(true);
+            //  listHashMap.put(Symbols,addchartvalue_stock);
+            // company_symbols.add(Symbols);
 
-                                    YAxis rightAxis = holder.mChart.getAxisRight();
-                                    rightAxis.setEnabled(false);
-
-                                    XAxis xAxis = holder.mChart.getXAxis();
-                                    xAxis.setEnabled(true);
+        }
+        //yVals2=SendData(addchartvalue_stock2.get(position));
 
 
-                                    // Shiow legend
-                                    Legend l = holder.mChart.getLegend();
-                                    // modify the legend ...
-                                    l.setForm(Legend.LegendForm.LINE);
-                                    l.setTextSize(12f);
-                                    l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-                                    l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-                                    l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-                                    l.setDrawInside(false);
+          yVals1=new ArrayList<>();
+      for (int i = 0; i < addchartvalue_stock2.get(position).size(); i++) {
+            StockChartData h = addchartvalue_stock2.get(position).get(i);
+            float P[] = {Float.parseFloat(h.getPrice())};
+            String output = h.getDate().substring(10, 16);
+            String output_hours = output.substring(1, 3);//09
+            String output_seconds = output.substring(4, 6);//09
+            String trim_hours;
+            if (output_hours.startsWith("0")) {
+                trim_hours = output_hours.substring(1, 2);
+            } else {
+                trim_hours = output_hours;
+            }
+            String Time = trim_hours + "." + output_seconds;
+            float fTime = Float.parseFloat(Time);
+
+            float D[] = {fTime};
+            for (int j = 0; j < P.length; j++) {
+
+                yVals1.add(new Entry(D[j], P[j]));
+
+            }
+
+            LineDataSet dataSet = new LineDataSet(yVals1, "الرسوم البيانية للسوق");
+            //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+            dataSet.setDrawCircles(false);
+            dataSet.setDrawValues(false);
+            dataSet.setLineWidth(2f);
+            dataSet.setColor(activity.getResources().getColor(R.color.chart_color));
+            // instantiate pie data object now
+            LineData data = new LineData(dataSet);
+
+            //    data.setValueFormatter(new PercentFormatter());
+
+            // undo all highlights
+            holder.mChart.setData(data);
+            holder.mChart.animateX(2500);
+            holder. mChart.setDrawBorders(false);
+            holder. mChart.setDrawGridBackground(false);
+            holder.  mChart.getDescription().setEnabled(false);
+            holder.  mChart.setAutoScaleMinMaxEnabled(true);
+
+            // remove axis
+            YAxis leftAxis = holder.mChart.getAxisLeft();
+            leftAxis.setEnabled(true);
+
+            YAxis rightAxis = holder.mChart.getAxisRight();
+            rightAxis.setEnabled(false);
+
+            XAxis xAxis = holder.mChart.getXAxis();
+            xAxis.setEnabled(true);
 
 
+            // Shiow legend
+            Legend l = holder.mChart.getLegend();
+            // modify the legend ...
+            l.setForm(Legend.LegendForm.LINE);
+            l.setTextSize(12f);
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+        }
 
-                            }
-
-                            @Override
-                            public void onError(ANError anError) {
-
-                            }
-                        });
 
 
 
 
         return convertView;
     }
+
+
     static  class MyViewHoldwer{
         LineChart mChart;
         public  MyViewHoldwer(View v){
@@ -186,39 +215,41 @@ public class StockChartAdapter  extends BaseAdapter{
 
     }
 
-public List<Entry> sendData(ArrayList<StockChartData> chartresult){
-    yVals1 = new ArrayList<Entry>();
-    for (int i = 0; i < chartresult.size(); i++)
-    {
-        StockChartData h = chartresult.get(i);
-        // Toast.makeText(activity,h.toString(),Toast.LENGTH_SHORT).show();
-        float P[] = {Float.parseFloat(h.getPrice())};
-        String output = h.getDate().substring(10, 16);
-        String output_hours = output.substring(1, 3);//09
-        String output_seconds = output.substring(4, 6);//09
-        String trim_hours;
-        if (output_hours.startsWith("0")) {
-            trim_hours = output_hours.substring(1, 2);
-        } else {
-            trim_hours = output_hours;
+
+  /*  public List<Entry> SendData(ArrayList<StockChartData> chart_data){
+        for (int i = 0; i < chart_data.size(); i++) {
+            StockChartData h = chart_data.get(i);
+            float P[] = {Float.parseFloat(h.getPrice())};
+            String output = h.getDate().substring(10, 16);
+            String output_hours = output.substring(1, 3);//09
+            String output_seconds = output.substring(4, 6);//09
+            String trim_hours;
+            if (output_hours.startsWith("0")) {
+                trim_hours = output_hours.substring(1, 2);
+            } else {
+                trim_hours = output_hours;
+            }
+            String Time = trim_hours + "." + output_seconds;
+            float fTime = Float.parseFloat(Time);
+
+            float D[] = {fTime};
+            for (int j = 0; j < P.length; j++) {
+
+                yVals1.add(new Entry(D[j], P[j]));
+
+            }
+
+
         }
-        String Time = trim_hours + "." + output_seconds;
-        float fTime = Float.parseFloat(Time);
-
-        float D[] = {fTime};
-        for (int j = 0; j < P.length; j++) {
-
-            yVals1.add(new Entry(D[j], P[j]));
-
-        }
-
-
-
-
-
+        return  yVals1;
+    }*/
     }
 
-    return yVals1 ;
-}}
+
+
+
+
+
+
 
 

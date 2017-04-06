@@ -4,12 +4,18 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.av.dashboardthegroup.Adapter.CompaniesAdapter;
+import com.av.dashboardthegroup.Model.CompanyData;
 import com.av.dashboardthegroup.Model.MarketChartData;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -42,6 +48,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import static com.av.dashboardthegroup.MainActivity.company_symbols;
+
 /**
  * Created by Aya on 3/15/2017.
  */
@@ -52,107 +60,192 @@ public class PieChartActivity extends Activity {
 
     private float[] xData = { 50, 50, 50};
     static ArrayList<MarketChartData> addchartvalue;
+    ArrayList<CompanyData> companyDataArrayList;
+    CompaniesAdapter companiesAdapter;
+    public static   ListView list_companies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       setContentView(R.layout.try_k);
+        setContentView(R.layout.list_compnay);
 
         AndroidNetworking.initialize(getApplicationContext());
         AndroidNetworking.setParserFactory(new JacksonParserFactory());
+        list_companies=(ListView) findViewById(R.id.list_company);
 
-        AndroidNetworking.get("https://thegroupmw.azurewebsites.net/JSON/GetChartData.aspx")
+        AndroidNetworking.get("http://thegroupmw.azurewebsites.net/JSON/Companies.aspx")
                 .setPriority(Priority.HIGH)
                 .addHeaders("Accept", "application/json")
                 .addHeaders("Content-type", "application/json")
                 .build()
-                .getAsJSONArray(new JSONArrayRequestListener() {
+                .getAsJSONObject(new JSONObjectRequestListener() {
 
 
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
+                        try {
+                            companyDataArrayList=new ArrayList<CompanyData>();
+
+                            JSONArray get_categories=response.getJSONArray("categories");
+                            for(int i =0;i<get_categories.length();i++){
+                                JSONObject get_category=get_categories.getJSONObject(i);
+                                JSONArray get_companies=get_category.getJSONArray("companies");
+                                for(int j=0;j<get_companies.length();j++){
+                                    JSONObject get_company=get_companies.getJSONObject(j);
+                                    CompanyData cd=new CompanyData();
+                                    cd.setNameEn(get_company.getString("NameEn"));
+                                    cd.setNameAr(get_company.getString("NameAr"));
+                                    cd.setSymbol(get_company.getString("Symbol"));
+                                    cd.setLogo(get_company.getString("Logo"));
+                                    companyDataArrayList.add(cd);
+
+                                }
+
+                            }
+                           companiesAdapter=new CompaniesAdapter(PieChartActivity.this,companyDataArrayList);
+                            list_companies.setAdapter(companiesAdapter);
+                            list_companies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+
+
+
+
+
+
+
+
+
+
+                                }
+                            });
+
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
+
+/*
+
+        AndroidNetworking.get("https://testfirebase-d33a0.firebaseio.com/chart_Data/.json")
+                .setPriority(Priority.HIGH)
+                .addHeaders("Accept", "application/json")
+                .addHeaders("Content-type", "application/json")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+
+
+                    @Override
+                    public void onResponse(JSONObject response) {
                         try {
 
-                            JSONArray jsonArray=response;
-                            addchartvalue =new ArrayList<>();
-                            for(int i=0 ;i<jsonArray.length();i++){
-                                JSONObject object = jsonArray.getJSONObject(i);
-                                MarketChartData marketChartData=new MarketChartData();
-                                marketChartData.setDate(object.getString("Date"));
-                                marketChartData.setPrice(object.getString("Price"));
-                                addchartvalue.add(marketChartData);
-                            }
+                            JSONObject jsonArray=response;
+                            for(int k=0;k<jsonArray.length();k++){
+                                String check=company_symbols.get(k);
+                                String check2= jsonArray.names().getString(k);
 
-                            mChart = (LineChart) findViewById(R.id.line_chart);
+                                //    for(int m=0;m<jsonArray.length();m++){
+                                    if(check.trim()==check2.trim()){
+                                        JSONArray n=jsonArray.getJSONArray(company_symbols.get(k));
 
-                            List<Entry> yVals1 = new ArrayList<Entry>();
+                                        addchartvalue =new ArrayList<>();
+                                        for(int j=0 ;j<n.length();j++){
+                                            JSONObject object = n.getJSONObject(j);
+                                            MarketChartData marketChartData=new MarketChartData();
+                                            marketChartData.setDate(object.getString("Date"));
+                                            marketChartData.setPrice(object.getString("Price"));
+                                            addchartvalue.add(marketChartData);
+                                        }
 
 
-                            for (int i = 0; i < addchartvalue.size(); i++) {
-                                MarketChartData h = addchartvalue.get(i);
-                                float P[] = {Float.parseFloat(h.getPrice())};
+                                        mChart = (LineChart) findViewById(R.id.line_chart);
 
-                                String output = h.getDate().substring(10, 16);
-                                String output_hours = output.substring(1, 3);//09
-                                String output_seconds = output.substring(4, 6);//09
-                                String trim_hours;
-                                if (output_hours.startsWith("0")) {
-                                    trim_hours = output_hours.substring(1, 2);
-                                } else {
-                                    trim_hours = output_hours;
+                                        List<Entry> yVals1 = new ArrayList<Entry>();
+                                        for (int i = 0; i < addchartvalue.size(); i++) {
+                                            MarketChartData h = addchartvalue.get(i);
+                                            float P[] = {Float.parseFloat(h.getPrice())};
+
+                                            String output = h.getDate().substring(10, 16);
+                                            String output_hours = output.substring(1, 3);//09
+                                            String output_seconds = output.substring(4, 6);//09
+                                            String trim_hours;
+                                            if (output_hours.startsWith("0")) {
+                                                trim_hours = output_hours.substring(1, 2);
+                                            } else {
+                                                trim_hours = output_hours;
+                                            }
+                                            String Time = trim_hours + "." + output_seconds;
+                                            float fTime = Float.parseFloat(Time);
+
+                                            float D[] = {fTime};
+                                            for (int j = 0; j < P.length; j++) {
+
+                                                yVals1.add(new Entry(D[j], P[j]));
+
+                                            }
+                                            LineDataSet dataSet = new LineDataSet(yVals1, "MarketData Charts");
+
+                                            //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+                                            dataSet.setDrawCircles(false);
+                                            dataSet.setDrawValues(false);
+                                            dataSet.setLineWidth(2f);
+                                            dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
+                                            // instantiate pie data object now
+                                            LineData data = new LineData(dataSet);
+
+                                            //    data.setValueFormatter(new PercentFormatter());
+
+                                            // undo all highlights
+                                            mChart.setData(data);
+                                            mChart.animateX(2500);
+                                            mChart.setDrawBorders(false);
+                                            mChart.setDrawGridBackground(false);
+                                            mChart.getDescription().setEnabled(false);
+                                            mChart.setAutoScaleMinMaxEnabled(true);
+
+                                            // remove axis
+                                            YAxis leftAxis = mChart.getAxisLeft();
+                                            leftAxis.setEnabled(true);
+
+                                            YAxis rightAxis = mChart.getAxisRight();
+                                            rightAxis.setEnabled(false);
+
+                                            XAxis xAxis = mChart.getXAxis();
+                                            xAxis.setEnabled(true);
+
+
+                                            // Shiow legend
+                                            Legend l = mChart.getLegend();
+                                            // modify the legend ...
+                                            l.setForm(Legend.LegendForm.LINE);
+                                            l.setTextSize(11f);
+                                            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+                                            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+                                            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+                                            l.setDrawInside(false);
+
+                                        }
+
+
                                 }
-                                String Time = trim_hours + "." + output_seconds;
-                                float fTime = Float.parseFloat(Time);
-
-                                float D[] = {fTime};
-                                for (int j = 0; j < P.length; j++) {
-
-                                    yVals1.add(new Entry(D[j], P[j]));
 
                                 }
-                                LineDataSet dataSet = new LineDataSet(yVals1, "MarketData Charts");
-
-                                //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-
-                                dataSet.setDrawCircles(false);
-                                dataSet.setDrawValues(false);
-                                dataSet.setLineWidth(2f);
-                                dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
-                                // instantiate pie data object now
-                                LineData data = new LineData(dataSet);
-
-                                //    data.setValueFormatter(new PercentFormatter());
-
-                                // undo all highlights
-                                mChart.setData(data);
-                                mChart.animateX(2500);
-                                mChart.setDrawBorders(false);
-                                mChart.setDrawGridBackground(false);
-                                mChart.getDescription().setEnabled(false);
-                                mChart.setAutoScaleMinMaxEnabled(true);
-
-                                // remove axis
-                                YAxis leftAxis = mChart.getAxisLeft();
-                                leftAxis.setEnabled(true);
-
-                                YAxis rightAxis = mChart.getAxisRight();
-                                rightAxis.setEnabled(false);
-
-                                XAxis xAxis = mChart.getXAxis();
-                                xAxis.setEnabled(true);
 
 
-                                // Shiow legend
-                                Legend l = mChart.getLegend();
-                                // modify the legend ...
-                                l.setForm(Legend.LegendForm.LINE);
-                                l.setTextSize(11f);
-                                l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-                                l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-                                l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-                                l.setDrawInside(false);
-
-                            }
+                        //    }
 
 
                             // create pie data set
@@ -169,6 +262,7 @@ public class PieChartActivity extends Activity {
 
                     }
                 });
+*/
 
 
        // mChart.setUsePercentValues(true);

@@ -161,7 +161,6 @@ public class PortfoliosAdapter extends BaseAdapter {
         holder.mChart.setEntryLabelTextSize(9f);
         holder. mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
         holder. mChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
-     /*   */
 
 
 
@@ -184,6 +183,7 @@ public class PortfoliosAdapter extends BaseAdapter {
     static  class MyViewHoldwer{
         TextView Symbol;
         PieChart mChart;
+
         public  MyViewHoldwer(View v){
             Symbol    = (TextView)  v.findViewById(R.id.txt_Symbol);
             mChart =  (PieChart) v.findViewById(R.id.pie_chart);

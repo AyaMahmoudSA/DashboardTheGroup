@@ -23,6 +23,16 @@
 
             <include layout="@layout/market_data"/>
             <include layout="@layout/activity_preferred"/>
+
+
+           <Button
+                android:id="@+id/btn_go"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                 android:layout_gravity="center"
+                 android:gravity="center"
+                android:text="you need to add Company"/>
+
             <include layout="@layout/stock_chart"/>
             <include layout="@layout/activity_portfolio"/>
 
